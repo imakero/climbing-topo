@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  topo:
+    build: ./topo-api/app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./topo-api/app:/usr/src/app/
+    ports:
+      - 8009:8000
+    env_file:
+      - ./topo-api/app/.env.dev
+  topo-db:
+    image: postgis/postgis:15-3.3
+    platform: linux/amd64
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=topo
+      - POSTGRES_PASSWORD=topo
+      - POSTGRES_DB=topo_dev
+
+volumes:
+  postgres_data:
