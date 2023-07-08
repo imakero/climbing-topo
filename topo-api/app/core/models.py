@@ -21,6 +21,17 @@ class Climbable(models.Model):
         return self.name
 
 
+class Problem(models.Model):
+    climbable = models.ForeignKey(Climbable, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    description = models.TextField(max_length=1000)
+    grade = models.CharField(max_length=4)
+    tags = models.ManyToManyField("Tag")
+
+    def __str__(self):
+        return self.name
+
+
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
