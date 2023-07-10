@@ -1,5 +1,11 @@
 from django.http import HttpResponse
 
+from rest_framework import generics
+from core.serializers import ProblemSerializer
 
-def index(request):
-    return HttpResponse("Of CORS!")
+from core.models import Problem
+
+
+class ProblemList(generics.ListCreateAPIView):
+    queryset = Problem.objects.all()
+    serializer_class = ProblemSerializer

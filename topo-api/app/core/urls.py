@@ -1,4 +1,4 @@
 from django.urls import path
-from core.views import index
+from core.views import ProblemList
 
-urlpatterns = [path("", index, name="index")]
+urlpatterns = [path("problems/", ProblemList.as_view(), name="index")]
