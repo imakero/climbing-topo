@@ -1,10 +1,21 @@
-from rest_framework_gis import serializers
+from rest_framework import serializers
 
-from core.models import Problem
+from core.models import Problem, Climbable
+from core.serializer_fields import GpsPinField
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    on = serializers.CharField(source="name")
+    coordinates = GpsPinField(source="location")
+
+    class Meta:
+        model = Climbable
+        fields = ["on", "coordinates"]
 
 
 class ProblemSerializer(serializers.ModelSerializer):
-    location = serializers.GeometryField(source="climbable.location")
+    location = LocationSerializer(source="climbable")
+    tags = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Problem
@@ -13,7 +24,6 @@ class ProblemSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "grade",
-            "climbable",
-            "tags",
             "location",
+            "tags",
         ]
