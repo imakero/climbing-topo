@@ -1,5 +1,3 @@
-from django.http import HttpResponse
-
 from rest_framework import generics
 from core.serializers import ProblemSerializer
 
