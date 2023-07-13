@@ -144,6 +144,16 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": os.environ.get("REDIS_URL", "redis://localhost:6379/1"),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+}
+
 if DEBUG:
     import socket  # only if you haven't already imported this
 

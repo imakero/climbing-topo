@@ -21,6 +21,10 @@ services:
       - POSTGRES_USER=topo
       - POSTGRES_PASSWORD=topo
       - POSTGRES_DB=topo_dev
-
+  redis:
+    restart: unless-stopped
+    image: redis:7.0.12-alpine
+    expose:
+      - 6379
 volumes:
   postgres_data:
