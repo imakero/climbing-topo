@@ -7,10 +7,10 @@ class GpsPinField(serializers.Field):
     def to_representation(self, value):
         lon, lat = value.x, value.y
         return {
-            "lat": lat,
             "lon": lon,
-            "str": f"{lat}, {lon}",
+            "lat": lat,
+            "google_maps_string": f"{lat}, {lon}",
         }
 
     def to_internal_value(self, data):
-        return fromstr(f"SRID=4326;POINT ({data.lat} {data.lon})")
+        return fromstr(f"SRID=4326;POINT ({data.lon} {data.lat})")
