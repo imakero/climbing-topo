@@ -159,6 +159,13 @@ REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": (
         "django_filters.rest_framework.DjangoFilterBackend",
     ),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    "SIGNING_KEY": os.environ.get("SIMPLE_JWT_SECRET_KEY", SECRET_KEY),
 }
 
 if DEBUG:
