@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from core.models import Problem, Climbable
-from core.serializer_fields import GpsPinField
+from climbs.models import Problem, Climbable
+from climbs.serializer_fields import GpsPinField
 
 
 class LocationSerializer(serializers.ModelSerializer):

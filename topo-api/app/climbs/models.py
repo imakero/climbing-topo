@@ -1,10 +1,4 @@
-from django.contrib.auth.models import AbstractUser
-
 from django.contrib.gis.db import models
-
-
-class CustomUser(AbstractUser):
-    pass
 
 
 class Climbable(models.Model):
@@ -26,7 +20,7 @@ class Problem(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
     grade = models.CharField(max_length=4)
-    tags = models.ManyToManyField("Tag")
+    tags = models.ManyToManyField("Tag", related_name="problems", blank=True)
 
     def __str__(self):
         return self.name

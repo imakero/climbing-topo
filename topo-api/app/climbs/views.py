@@ -2,9 +2,9 @@ from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
 from rest_framework import generics
 
-from core.filters import ProblemFilter
-from core.models import Problem
-from core.serializers import ProblemSerializer
+from climbs.filters import ProblemFilter
+from climbs.models import Problem
+from climbs.serializers import ProblemSerializer
 
 
 class ProblemList(generics.ListCreateAPIView):

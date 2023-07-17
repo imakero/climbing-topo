@@ -2,7 +2,7 @@ import pytest
 
 from django.contrib.gis.geos import fromstr
 
-from core.models import Climbable, Tag, Problem
+from climbs.models import Climbable, Tag, Problem
 
 
 @pytest.mark.django_db
