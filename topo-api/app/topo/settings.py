@@ -45,8 +45,10 @@ INSTALLED_APPS = [
     "rest_framework_gis",
     "corsheaders",
     "django_filters",
+    # Local
     "climbs",
     "users",
+    "shared",
 ]
 
 MIDDLEWARE = [
