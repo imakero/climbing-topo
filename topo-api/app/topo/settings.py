@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "climbs",
     "users",
     "shared",
+    "activities",
 ]
 
 MIDDLEWARE = [
