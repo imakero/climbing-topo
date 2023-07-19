@@ -17,3 +17,11 @@ class Ascent(TimeStampModel):
         choices=ZERO_TO_FIVE_CHOICES, blank=True, null=True
     )
     comment = models.TextField(max_length=1000, blank=True, default="")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "problem"],
+                name="user and problem must be unique together",
+            )
+        ]
