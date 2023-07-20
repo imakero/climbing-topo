@@ -3,8 +3,8 @@ from django.contrib.gis.geos import fromstr
 from rest_framework import generics
 
 from climbs.filters import ProblemFilter
-from climbs.models import Problem
-from climbs.serializers import ProblemSerializer
+from climbs.models import Problem, TopoImage
+from climbs.serializers import ProblemSerializer, TopoImageSerializer
 
 
 class ProblemList(generics.ListCreateAPIView):
@@ -27,3 +27,8 @@ class ProblemList(generics.ListCreateAPIView):
             .select_related("climbable")
             .annotate(dist_km=Distance("climbable__location", point) / 1000)
         )
+
+
+class TopoImageList(generics.ListCreateAPIView):
+    serializer_class = TopoImageSerializer
+    queryset = TopoImage.objects.all()
