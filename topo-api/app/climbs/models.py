@@ -31,3 +31,11 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TopoImage(models.Model):
+    climbable = models.ForeignKey(Climbable, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=f"topo_images/")
+
+    def __str__(self):
+        return f"Topo image for {self.climbable.name} - {self.image.name}"
