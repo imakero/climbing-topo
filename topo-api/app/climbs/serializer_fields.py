@@ -13,4 +13,4 @@ class GpsPinField(serializers.Field):
         }
 
     def to_internal_value(self, data):
-        return fromstr(f"SRID=4326;POINT ({data.lon} {data.lat})")
+        return fromstr(f"SRID=4326;POINT ({data['lon']} {data['lat']})")
