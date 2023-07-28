@@ -1,5 +1,9 @@
-import pytest
+import io
 
+import pytest
+from PIL import Image
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.gis.geos import fromstr
 
 from climbs.models import Climbable, Problem, Tag
@@ -78,4 +82,23 @@ def problem(add_problem, climbable, tag_crimpy, tag_slopers):
         description="Classic testpiece!",
         grade="7C",
         tags=[tag_crimpy, tag_slopers],
+    )
+
+
+@pytest.fixture
+def image_file():
+    image = Image.new("RGB", size=(100, 100), color=(255, 0, 0))
+    image_file = io.BytesIO()
+    image.save(image_file, format="JPEG")
+    image_file.seek(0)
+
+    return SimpleUploadedFile(
+        "test_image.jpg", image_file.read(), content_type="image/jpeg"
+    )
+
+
+@pytest.fixture
+def text_file():
+    return SimpleUploadedFile(
+        "test_file.txt", b"file contents", content_type="text/plain"
     )
