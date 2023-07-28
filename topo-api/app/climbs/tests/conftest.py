@@ -19,11 +19,10 @@ def add_topo_image(tmp_media_folder):
 
 
 @pytest.fixture
-def topo_image_1(add_topo_image, climbable, image_file):
+def topo_image(add_topo_image, climbable, image_file):
     return add_topo_image(climbable=climbable, image=image_file)
 
 
 @pytest.fixture
-def topo_image_2(add_topo_image, climbable, image_file):
-    image_file.name = "test_image_2.jpg"
-    return add_topo_image(climbable=climbable, image=image_file)
+def topo_image_other(add_topo_image, climbable_other, image_file_other):
+    return add_topo_image(climbable=climbable_other, image=image_file_other)
