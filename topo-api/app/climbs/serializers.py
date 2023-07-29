@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from climbs.models import Problem, Climbable
+from climbs.models import Problem, Climbable, TopoImage
 from climbs.serializer_fields import GpsPinField
 
 
@@ -29,3 +29,9 @@ class ProblemSerializer(serializers.ModelSerializer):
             "tags",
             "dist_km",
         ]
+
+
+class TopoImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TopoImage
+        fields = ["id", "climbable", "image"]

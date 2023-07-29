@@ -1,3 +1,4 @@
+import os
 from django.contrib.gis.db import models
 
 
@@ -31,3 +32,20 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TopoImage(models.Model):
+    climbable = models.ForeignKey(Climbable, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=f"topo_images/")
+
+    def save(self, *args, **kwargs):
+        # Remove old topo image from disk if it's being updated
+        if self.pk:
+            old_object = TopoImage.objects.get(pk=self.pk)
+            if self.image != old_object.image:
+                old_object.image.delete(save=False)
+
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Topo image for {self.climbable.name} - {self.image.name}"

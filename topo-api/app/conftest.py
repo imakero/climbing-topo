@@ -1,5 +1,9 @@
-import pytest
+import io
 
+import pytest
+from PIL import Image
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.gis.geos import fromstr
 
 from climbs.models import Climbable, Problem, Tag
@@ -27,6 +31,11 @@ def location():
 
 
 @pytest.fixture
+def location_other():
+    return fromstr("POINT(-59.940783 17.401228)", srid=4326)
+
+
+@pytest.fixture
 def add_climbable():
     def _add_climbable(**kwargs):
         return Climbable.objects.create(**kwargs)
@@ -37,6 +46,13 @@ def add_climbable():
 @pytest.fixture
 def climbable(add_climbable, location):
     return add_climbable(name="Svälthammaren", type="BL", location=location)
+
+
+@pytest.fixture
+def climbable_other(add_climbable, location_other):
+    return add_climbable(
+        name="Traversblocket", type="BL", location=location_other
+    )
 
 
 @pytest.fixture
@@ -78,4 +94,35 @@ def problem(add_problem, climbable, tag_crimpy, tag_slopers):
         description="Classic testpiece!",
         grade="7C",
         tags=[tag_crimpy, tag_slopers],
+    )
+
+
+@pytest.fixture
+def image_file():
+    image = Image.new("RGB", size=(100, 100), color=(255, 0, 0))
+    image_file = io.BytesIO()
+    image.save(image_file, format="JPEG")
+    image_file.seek(0)
+
+    return SimpleUploadedFile(
+        "test_image.jpg", image_file.read(), content_type="image/jpeg"
+    )
+
+
+@pytest.fixture
+def image_file_other():
+    image = Image.new("RGB", size=(100, 100), color=(0, 255, 0))
+    image_file = io.BytesIO()
+    image.save(image_file, format="JPEG")
+    image_file.seek(0)
+
+    return SimpleUploadedFile(
+        "test_image_other.jpg", image_file.read(), content_type="image/jpeg"
+    )
+
+
+@pytest.fixture
+def text_file():
+    return SimpleUploadedFile(
+        "test_file.txt", b"file contents", content_type="text/plain"
     )
