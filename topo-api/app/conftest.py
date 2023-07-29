@@ -27,12 +27,12 @@ def user(add_user):
 
 @pytest.fixture
 def location():
-    return fromstr("POINT(-59.77591805596081 17.3728775782919)", srid=4326)
+    return fromstr("POINT(59.77591805596081 17.3728775782919)", srid=4326)
 
 
 @pytest.fixture
 def location_other():
-    return fromstr("POINT(-59.940783 17.401228)", srid=4326)
+    return fromstr("POINT(59.940783 17.401228)", srid=4326)
 
 
 @pytest.fixture
