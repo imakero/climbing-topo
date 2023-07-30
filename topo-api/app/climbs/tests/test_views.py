@@ -1,12 +1,8 @@
 import os
 from django.urls import reverse
 from django.test import override_settings
-from django.test.client import encode_multipart
-import pytest
 
 from climbs.models import TopoImage
-
-MULTIPART_BOUNDARY = "--------------MuLtIpArT_bOuNdArY--------------"
 
 
 def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
@@ -16,6 +12,7 @@ def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
         response = client.post(
             reverse("topos"),
             data={"climbable": climbable.id, "image": image_file},
+            format="multipart",
         )
 
     assert response.status_code == 201
@@ -73,12 +70,10 @@ def test_get_topo_image(db, client, topo_image):
 def test_update_climbable_for_topo_image(
     db, client, topo_image, climbable_other
 ):
-    data = {"climbable": climbable_other.id}
-    content = encode_multipart(MULTIPART_BOUNDARY, data)
     response = client.patch(
         reverse("topo", args=[topo_image.id]),
-        content,
-        content_type=f"multipart/form-data; boundary={MULTIPART_BOUNDARY}",
+        {"climbable": climbable_other.id},
+        format="multipart",
     )
 
     assert response.status_code == 200
@@ -94,13 +89,11 @@ def test_update_image_for_topo_image(
 
     old_image = topo_image.image
 
-    data = {"image": image_file_other}
-    content = encode_multipart(MULTIPART_BOUNDARY, data)
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.patch(
             reverse("topo", args=[topo_image.id]),
-            content,
-            content_type=f"multipart/form-data; boundary={MULTIPART_BOUNDARY}",
+            {"image": image_file_other},
+            format="multipart",
         )
 
         assert response.status_code == 200
