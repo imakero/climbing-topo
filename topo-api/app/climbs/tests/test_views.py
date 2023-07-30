@@ -6,7 +6,7 @@ from climbs.models import TopoImage
 
 
 def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
-    assert len(TopoImage.objects.all()) == 0
+    assert TopoImage.objects.count() == 0
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.post(
@@ -17,7 +17,7 @@ def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
 
     assert response.status_code == 201
 
-    assert len(TopoImage.objects.all()) == 1
+    assert TopoImage.objects.count() == 1
     assert response.data["climbable"] == climbable.id
     assert response.data["image"].endswith(image_file.name)
 
@@ -28,7 +28,7 @@ def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
 def test_add_topo_image_fails_for_txt_file(
     db, client, climbable, text_file, tmp_media_folder
 ):
-    assert len(TopoImage.objects.all()) == 0
+    assert TopoImage.objects.count() == 0
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.post(
@@ -39,7 +39,7 @@ def test_add_topo_image_fails_for_txt_file(
 
     assert response.status_code == 400
     assert response.data["image"][0].code == "invalid_image"
-    assert len(TopoImage.objects.all()) == 0
+    assert TopoImage.objects.count() == 0
 
 
 def test_list_topo_images(db, client, topo_image, topo_image_other):
@@ -85,7 +85,7 @@ def test_update_climbable_for_topo_image(
 def test_update_image_for_topo_image(
     db, client, topo_image, image_file_other, tmp_media_folder
 ):
-    assert len(TopoImage.objects.all()) == 1
+    assert TopoImage.objects.count() == 1
 
     old_image = topo_image.image
 
@@ -108,11 +108,11 @@ def test_update_image_for_topo_image(
 
 
 def test_delete_topo_image(db, client, topo_image, tmp_media_folder):
-    assert len(TopoImage.objects.all()) == 1
+    assert TopoImage.objects.count() == 1
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.delete(reverse("topo", args=[topo_image.id]))
 
         assert response.status_code == 204
-        assert len(TopoImage.objects.all()) == 0
+        assert TopoImage.objects.count() == 0
         assert not os.path.exists(topo_image.image.path)
