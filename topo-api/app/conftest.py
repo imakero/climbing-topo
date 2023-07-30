@@ -6,8 +6,15 @@ from PIL import Image
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.gis.geos import fromstr
 
+from rest_framework.test import APIClient
+
 from climbs.models import Climbable, Problem, Tag
 from users.models import User
+
+
+@pytest.fixture
+def client():
+    return APIClient()
 
 
 @pytest.fixture
