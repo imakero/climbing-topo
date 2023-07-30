@@ -17,9 +17,24 @@ class ProblemFilter(filters.FilterSet):
     )
     dist_km = filters.NumberFilter(method="filter_distance_from_point")
 
+    min_ascents = filters.NumberFilter(method="filter_min_ascents")
+    max_ascents = filters.NumberFilter(method="filter_max_ascents")
+    min_rating = filters.NumberFilter(method="filter_min_rating")
+    max_rating = filters.NumberFilter(method="filter_max_rating")
+
     class Meta:
         model = Problem
-        fields = ["grade", "name", "tags", "climbable", "dist_km"]
+        fields = [
+            "grade",
+            "name",
+            "tags",
+            "climbable",
+            "dist_km",
+            "min_ascents",
+            "max_ascents",
+            "min_rating",
+            "max_rating",
+        ]
 
     def filter_distance_from_point(self, queryset, name, value):
         lon = self.request.query_params.get("lon", None)
@@ -33,3 +48,15 @@ class ProblemFilter(filters.FilterSet):
         return queryset.annotate(
             dist_km=Distance("climbable__location", point) / 1000
         ).filter(dist_km__lte=value)
+
+    def filter_min_ascents(self, queryset, name, value):
+        return queryset.filter(ascents__gte=value)
+
+    def filter_max_ascents(self, queryset, name, value):
+        return queryset.filter(ascents__lte=value)
+
+    def filter_min_rating(self, queryset, name, value):
+        return queryset.filter(rating__gte=value)
+
+    def filter_max_rating(self, queryset, name, value):
+        return queryset.filter(rating__lte=value)
