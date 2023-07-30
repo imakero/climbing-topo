@@ -7,7 +7,7 @@ from climbs.models import Problem, TopoImage
 from climbs.serializers import ProblemSerializer, TopoImageSerializer
 
 
-class ProblemList(generics.ListCreateAPIView):
+class ProblemsView(generics.ListCreateAPIView):
     serializer_class = ProblemSerializer
     filterset_class = ProblemFilter
 
@@ -29,12 +29,12 @@ class ProblemList(generics.ListCreateAPIView):
         )
 
 
-class TopoImageList(generics.ListCreateAPIView):
+class TopoImagesView(generics.ListCreateAPIView):
     serializer_class = TopoImageSerializer
     queryset = TopoImage.objects.all()
 
 
-class TopoImageDetail(generics.RetrieveUpdateDestroyAPIView):
+class TopoImageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TopoImageSerializer
     queryset = TopoImage.objects.all()
 

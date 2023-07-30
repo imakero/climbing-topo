@@ -6,7 +6,7 @@ from .models import Ascent
 from .serializers import AscentSerializer
 
 
-class AllAscentsListView(generics.ListCreateAPIView):
+class AscentsView(generics.ListCreateAPIView):
     queryset = Ascent.objects.all()
     serializer_class = AscentSerializer
     filterset_class = AscentFilter
@@ -17,6 +17,6 @@ class AllAscentsListView(generics.ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-class AscentDetailView(generics.RetrieveUpdateDestroyAPIView):
+class AscentView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ascent.objects.all()
     serializer_class = AscentSerializer

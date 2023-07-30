@@ -1,16 +1,16 @@
 from django.urls import path
-from .views import AllAscentsListView, AscentDetailView
+from .views import AscentsView, AscentView
 
 
 urlpatterns = [
     path(
         "activities/ascents/",
-        AllAscentsListView.as_view(),
+        AscentsView.as_view(),
         name="ascents",
     ),
     path(
         "activities/ascents/<int:pk>/",
-        AscentDetailView.as_view(),
+        AscentView.as_view(),
         name="ascent",
     ),
 ]
