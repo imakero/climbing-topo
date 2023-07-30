@@ -1,5 +1,7 @@
 from rest_framework import generics
 from rest_framework.exceptions import NotAuthenticated
+
+from .filters import AscentFilter
 from .models import Ascent
 from .serializers import AscentSerializer
 
@@ -7,6 +9,7 @@ from .serializers import AscentSerializer
 class AllAscentsListView(generics.ListCreateAPIView):
     queryset = Ascent.objects.all()
     serializer_class = AscentSerializer
+    filterset_class = AscentFilter
 
     def perform_create(self, serializer):
         if not self.request.user.is_authenticated:

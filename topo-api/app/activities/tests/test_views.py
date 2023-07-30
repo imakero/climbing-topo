@@ -62,6 +62,44 @@ def test_get_ascents(db, client, ascent, ascent_other):
     assert ascent_data_other["comment"] == ascent_other.comment
 
 
+def test_filter_ascents_by_problem(db, client, ascent, ascent_other):
+    assert Ascent.objects.count() == 2
+
+    query_params = {"problem": ascent.problem.id}
+    response = client.get(
+        reverse("ascents"),
+        data=query_params,
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == 1
+
+    ascent_data = response.data[0]
+    assert ascent_data["problem"] == ascent.problem.id
+    assert ascent_data["user"] == ascent.user.id
+    assert ascent_data["given_rating"] == ascent.given_rating
+    assert ascent_data["comment"] == ascent.comment
+
+
+def test_filter_ascents_by_user(db, client, ascent, ascent_other):
+    assert Ascent.objects.count() == 2
+
+    query_params = {"user": ascent.user.id}
+    response = client.get(
+        reverse("ascents"),
+        data=query_params,
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == 1
+
+    ascent_data = response.data[0]
+    assert ascent_data["problem"] == ascent.problem.id
+    assert ascent_data["user"] == ascent.user.id
+    assert ascent_data["given_rating"] == ascent.given_rating
+    assert ascent_data["comment"] == ascent.comment
+
+
 def test_get_ascent(db, client, ascent):
     response = client.get(reverse("ascent", kwargs={"pk": ascent.id}))
 
