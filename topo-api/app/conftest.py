@@ -28,7 +28,16 @@ def add_user():
 @pytest.fixture
 def user(add_user):
     return add_user(
-        username="testuser", password="testpass", email="test@example.com"
+        username="testuser", password="testpass", email="testuser@example.com"
+    )
+
+
+@pytest.fixture
+def user_other(add_user):
+    return add_user(
+        username="testuser_other",
+        password="testpass_other",
+        email="testuser_other@example.com",
     )
 
 
@@ -101,6 +110,17 @@ def problem(add_problem, climbable, tag_crimpy, tag_slopers):
         description="Classic testpiece!",
         grade="7C",
         tags=[tag_crimpy, tag_slopers],
+    )
+
+
+@pytest.fixture
+def problem_other(add_problem, climbable_other, tag_crimpy, tag_slopers):
+    return add_problem(
+        climbable=climbable_other,
+        name="Ampere",
+        description="Might be soft with the kneebar beta?",
+        grade="8A",
+        tags=[tag_crimpy],
     )
 
 
