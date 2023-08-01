@@ -1,4 +1,5 @@
 import io
+import random
 
 import pytest
 from PIL import Image
@@ -24,6 +25,20 @@ def add_user():
         return User.objects.create_user(**kwargs)
 
     return _add_user
+
+
+@pytest.fixture
+def add_users(add_user):
+    def _add_users(n):
+        return [
+            add_user(
+                username=f"user {i+1}",
+                email=f"user_{i+1}@example.com",
+            )
+            for i in range(n)
+        ]
+
+    return _add_users
 
 
 @pytest.fixture
@@ -69,6 +84,31 @@ def add_climbable():
 
 
 @pytest.fixture
+def add_climbables(add_climbable, create_location):
+    def _add_climbables(n, names=None, locations=None, types=None):
+        climbables = []
+        for i in range(n):
+            params = {}
+            if names is not None:
+                params["name"] = names[i]
+            if locations is not None:
+                params["location"] = locations[i]
+            if types is not None:
+                params["type"] = types[i]
+            climbables.append(
+                add_climbable(
+                    location=create_location(
+                        random.uniform(-180, 180), random.uniform(-90, 90)
+                    ),
+                    **params,
+                )
+            )
+        return climbables
+
+    return _add_climbables
+
+
+@pytest.fixture
 def climbable(add_climbable, location):
     return add_climbable(name="Svälthammaren", type="BL", location=location)
 
@@ -109,6 +149,29 @@ def add_problem():
         return Problem.objects.create(**kwargs)
 
     return _add_problem
+
+
+@pytest.fixture
+def add_problems(add_problem):
+    def _add_problems(
+        n, climbables, grades=None, descriptions=None, tags=None, names=None
+    ):
+        problems = []
+        for i in range(n):
+            params = {"name": f"problem {i+1}", "climbable": climbables[i]}
+            if grades is not None:
+                params["grade"] = grades[i]
+            if descriptions is not None:
+                params["description"] = descriptions[i]
+            if tags is not None:
+                params["tags"] = tags[i]
+            if names is not None:
+                params["name"] = names[i]
+
+            problems.append(add_problem(**params))
+        return problems
+
+    return _add_problems
 
 
 @pytest.fixture
