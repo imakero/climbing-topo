@@ -57,3 +57,31 @@ def problems_in_a_grid(create_location, add_climbable, add_problem):
     ]
 
 
+@pytest.fixture
+def problems_with_rating(add_ascent, add_climbables, add_problems, add_users):
+    climbables = add_climbables(5)
+    problems = add_problems(5, climbables)
+    users = add_users(5)
+
+    # Let problem 1 have no rated ascents, rating = None
+    add_ascent(user=users[0], problem=problems[0], given_rating=None)
+    add_ascent(user=users[1], problem=problems[0], given_rating=None)
+    add_ascent(user=users[2], problem=problems[0], given_rating=None)
+
+    # Let problem 2 have one ascent with rating 2, rating = 2.0
+    add_ascent(user=users[0], problem=problems[1], given_rating=2)
+
+    # Let problem 3 have two ascents with rating 2 and 4, rating = 3.0
+    add_ascent(user=users[0], problem=problems[2], given_rating=2)
+    add_ascent(user=users[1], problem=problems[2], given_rating=4)
+
+    # Let problem 4 have three ascents but only one rated ascent with rating 4, rating = 4.0
+    add_ascent(user=users[0], problem=problems[3], given_rating=4)
+    add_ascent(user=users[1], problem=problems[3], given_rating=None)
+    add_ascent(user=users[2], problem=problems[3], given_rating=None)
+
+    # Let problem 5 have three ascents all rated 5, rating = 5.0
+    add_ascent(user=users[0], problem=problems[4], given_rating=5)
+    add_ascent(user=users[1], problem=problems[4], given_rating=5)
+    add_ascent(user=users[2], problem=problems[4], given_rating=5)
+

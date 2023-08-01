@@ -230,3 +230,40 @@ def test_filter_problems_on_distance(
     assert response_problem_names == expected_problem_names
 
 
+@pytest.mark.parametrize(
+    "min_rating, max_rating, expected_problems",
+    [
+        (None, None, [1, 2, 3, 4, 5]),
+        (None, 3, [1, 2, 3]),
+        (1, 4, [2, 3, 4]),
+        (4, None, [4, 5]),
+        (4.4, 4.6, []),
+        (1.1, 4.6, [2, 3, 4]),
+    ],
+)
+def test_filter_problems_on_rating(
+    db,
+    client,
+    problems_with_rating,
+    min_rating,
+    max_rating,
+    expected_problems,
+):
+    assert Problem.objects.count() == 5
+
+    response = client.get(
+        reverse("problems"),
+        get_query_params(min_rating=min_rating, max_rating=max_rating),
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_problem_names = set(
+        [problem["name"] for problem in response.data]
+    )
+    expected_problem_names = set([f"problem {i}" for i in expected_problems])
+
+    assert response_problem_names == expected_problem_names
+
+
