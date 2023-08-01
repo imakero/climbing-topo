@@ -39,3 +39,21 @@ def problems_with_searchables(add_climbables, add_problems):
     return problems, climbables
 
 
+@pytest.fixture
+def problems_in_a_grid(create_location, add_climbable, add_problem):
+    # One degree of latitude covers about 111 kilometers.
+    # One degree of longitude, covers about 111 kilometers at the equator but
+    # shrinks to 0 kilometers at the poles
+
+    # Points on a 3x3 grid extending north from the equator
+    locations = [create_location(x, y) for x in [0, 1, 2] for y in [0, 1, 2]]
+    climbables = [
+        add_climbable(name=f"climbable {i+1}", location=location)
+        for i, location in enumerate(locations)
+    ]
+    problems = [
+        add_problem(name=f"problem {i+1}", climbable=climbable)
+        for i, climbable in enumerate(climbables)
+    ]
+
+

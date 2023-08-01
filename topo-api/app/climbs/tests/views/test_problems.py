@@ -188,3 +188,45 @@ def test_filter_problems_on_climbable_name(
     assert response_ids == expected_ids
 
 
+@pytest.mark.parametrize(
+    "lon, lat, dist_km, expected_problems",
+    [
+        # Should only find problem at (0, 0)
+        (0, 0, 1, set([1])),
+        # Should find all problems if lat or lon is None
+        (None, 0, 1, set(range(1, 10))),
+        (0, None, 1, set(range(1, 10))),
+        (None, None, 1, set(range(1, 10))),
+        # Should find all problems
+        (0, 0, 10000, set(range(1, 10))),
+        # Should find no problems
+        (50, 50, 0, set()),
+        # Should find problems 5, 6, 8, 9
+        (2, 2, 180, set([5, 6, 8, 9])),
+        # Should find problems 6, 8, 9
+        (2, 2, 140, set([6, 8, 9])),
+    ],
+)
+def test_filter_problems_on_distance(
+    db,
+    client,
+    problems_in_a_grid,
+    lon,
+    lat,
+    dist_km,
+    expected_problems,
+):
+    query_string = get_query_params({"dist_km": dist_km}, lon=lon, lat=lat)
+
+    response = client.get(reverse("problems"), query_string)
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_problem_names = set(
+        [problem["name"] for problem in response.data]
+    )
+    expected_problem_names = set([f"problem {i}" for i in expected_problems])
+    assert response_problem_names == expected_problem_names
+
+
