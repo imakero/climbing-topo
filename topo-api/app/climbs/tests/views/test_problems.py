@@ -52,3 +52,35 @@ def test_get_problem_list(db, client, problem, problem_other, ascent):
     ):
         compare_problem(response_problem, problem)
 
+
+@pytest.mark.parametrize(
+    "grade, expected_problems",
+    [
+        ("8A", [1]),
+        ("8A,7C+,7C", [1, 2, 3, 4]),
+        ("8a,7c+,7c,6b", [1, 2, 3, 4, 5]),
+        ("7C", [4]),
+        (None, [1, 2, 3, 4, 5]),
+    ],
+)
+def test_filter_problems_on_grade(
+    db, client, climbable, add_problems, grade, expected_problems
+):
+    problems = add_problems(
+        5, [climbable] * 5, grades=["8A", "7C+", "7c+", "7C", "6b"]
+    )
+
+    response = client.get(
+        reverse("problems"),
+        get_query_params(grade=grade),
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_ids = set([problem["id"] for problem in response.data])
+    expected_ids = set([problems[i - 1].id for i in expected_problems])
+
+    assert response_ids == expected_ids
+
+
