@@ -43,13 +43,21 @@ def user_other(add_user):
 
 
 @pytest.fixture
-def location():
-    return fromstr("POINT(59.77591805596081 17.3728775782919)", srid=4326)
+def create_location():
+    def _create_location(lon, lat):
+        return fromstr(f"POINT({lon} {lat})", srid=4326)
+
+    return _create_location
 
 
 @pytest.fixture
-def location_other():
-    return fromstr("POINT(59.940783 17.401228)", srid=4326)
+def location(create_location):
+    return create_location(17.3728775782919, 59.77591805596081)
+
+
+@pytest.fixture
+def location_other(create_location):
+    return create_location(17.401228, 59.940783)
 
 
 @pytest.fixture
