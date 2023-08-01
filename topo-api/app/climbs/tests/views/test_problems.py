@@ -84,3 +84,107 @@ def test_filter_problems_on_grade(
     assert response_ids == expected_ids
 
 
+@pytest.mark.parametrize(
+    "search_term, expected_problem_names",
+    [
+        ("Janne Bananne", ["Janne Bananne"]),
+        ("volt", ["Volt"]),
+        ("re", ["Jailbreak", "Underhuggaren", "Ampere"]),
+        (
+            None,
+            [
+                "Watchtower",
+                "Jailbreak",
+                "Underhuggaren",
+                "Ampere",
+                "Volt",
+                "Janne Bananne",
+            ],
+        ),
+        ("WATCH", ["Watchtower"]),
+    ],
+)
+def test_filter_problems_on_name(
+    db,
+    client,
+    problems_with_searchables,
+    search_term,
+    expected_problem_names,
+):
+    response = client.get(
+        reverse("problems"),
+        get_query_params(name=search_term),
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problem_names)
+
+    response_problem_names = set(
+        [problem["name"] for problem in response.data]
+    )
+    assert response_problem_names == set(expected_problem_names)
+
+
+@pytest.mark.parametrize(
+    "search_term, expected_problems",
+    [
+        ("knee", [4, 6]),
+        ("CL", [1, 2]),
+        ("rock", [5]),
+        (None, [1, 2, 3, 4, 5, 6]),
+        ("climb", [1, 2]),
+        ("start lower", [6]),
+        ("crimps", []),
+    ],
+)
+def test_filter_problems_on_description(
+    db,
+    client,
+    problems_with_searchables,
+    search_term,
+    expected_problems,
+):
+    problems, _ = problems_with_searchables
+    response = client.get(
+        reverse("problems"), get_query_params(description=search_term)
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_ids = set([problem["id"] for problem in response.data])
+    expected_ids = set([problems[i - 1].id for i in expected_problems])
+    assert response_ids == expected_ids
+
+
+@pytest.mark.parametrize(
+    "search_term, expected_problems",
+    [
+        ("blocket", [4, 5, 6]),
+        ("wall", []),
+        (None, [1, 2, 3, 4, 5, 6]),
+        ("svält", [1, 2, 3]),
+    ],
+)
+def test_filter_problems_on_climbable_name(
+    db,
+    client,
+    problems_with_searchables,
+    search_term,
+    expected_problems,
+):
+    problems, _ = problems_with_searchables
+
+    response = client.get(
+        reverse("problems"),
+        get_query_params(climbable=search_term),
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_ids = set([problem["id"] for problem in response.data])
+    expected_ids = set([problems[i - 1].id for i in expected_problems])
+    assert response_ids == expected_ids
+
+
