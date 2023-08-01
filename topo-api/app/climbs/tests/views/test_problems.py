@@ -189,6 +189,49 @@ def test_filter_problems_on_climbable_name(
 
 
 @pytest.mark.parametrize(
+    "search_tags, expected_problems",
+    [
+        (
+            "crimps,slopers",
+            set(["problem1", "problem2", "problem3"]),
+        ),
+        ("crimpy", set([])),
+        ("Pinches", set(["problem1"])),
+        ("yes,ok,slopers", set(["problem1", "problem2"])),
+    ],
+)
+def test_filter_problems_on_tags(
+    db, client, add_problem, add_tag, climbable, search_tags, expected_problems
+):
+    assert Problem.objects.count() == 0
+    assert Tag.objects.count() == 0
+
+    tag_crimps = add_tag(name="crimps")
+    tag_slopers = add_tag(name="slopers")
+    tag_pinches = add_tag(name="pinches")
+    tag_CRIMPS = add_tag(name="CRIMPS")
+    tag_Slopers = add_tag(name="Slopers")
+
+    p1_tags = [tag_crimps, tag_slopers, tag_pinches]
+    p2_tags = [tag_crimps, tag_Slopers]
+    p3_tags = [tag_CRIMPS]
+    p4_tags = []
+
+    for i, tags in enumerate([p1_tags, p2_tags, p3_tags, p4_tags]):
+        add_problem(name=f"problem{i+1}", tags=tags, climbable=climbable)
+
+    response = client.get(reverse("problems"), data={"tags": f"{search_tags}"})
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_problem_names = set(
+        [problem["name"] for problem in response.data]
+    )
+    assert response_problem_names == expected_problems
+
+
+@pytest.mark.parametrize(
     "lon, lat, dist_km, expected_problems",
     [
         # Should only find problem at (0, 0)
