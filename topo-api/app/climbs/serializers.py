@@ -17,6 +17,8 @@ class ProblemSerializer(serializers.ModelSerializer):
     location = LocationSerializer(source="climbable")
     tags = serializers.StringRelatedField(many=True)
     dist_km = serializers.FloatField(read_only=True)
+    ascents = serializers.IntegerField(read_only=True)
+    rating = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Problem
@@ -28,7 +30,10 @@ class ProblemSerializer(serializers.ModelSerializer):
             "location",
             "tags",
             "dist_km",
+            "ascents",
+            "rating",
         ]
+        read_only_fields = ["location", "tags", "dist_km", "ascents", "rating"]
 
 
 class TopoImageSerializer(serializers.ModelSerializer):

@@ -1,5 +1,6 @@
 import os
 from django.contrib.gis.db import models
+from climbs.query_sets import ProblemQuerySet
 
 
 class Climbable(models.Model):
@@ -22,6 +23,8 @@ class Problem(models.Model):
     description = models.TextField(max_length=1000)
     grade = models.CharField(max_length=4)
     tags = models.ManyToManyField("Tag", related_name="problems", blank=True)
+
+    objects = ProblemQuerySet.as_manager()
 
     def __str__(self):
         return self.name

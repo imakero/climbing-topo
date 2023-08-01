@@ -1,5 +1,3 @@
-from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.geos import fromstr
 from rest_framework import generics
 
 from climbs.filters import ProblemFilter
@@ -7,7 +5,7 @@ from climbs.models import Problem, TopoImage
 from climbs.serializers import ProblemSerializer, TopoImageSerializer
 
 
-class ProblemList(generics.ListCreateAPIView):
+class ProblemsView(generics.ListCreateAPIView):
     serializer_class = ProblemSerializer
     filterset_class = ProblemFilter
 
@@ -15,26 +13,20 @@ class ProblemList(generics.ListCreateAPIView):
         lon = self.request.query_params.get("lon", None)
         lat = self.request.query_params.get("lat", None)
 
-        if lon is None or lat is None:
-            return Problem.objects.prefetch_related("tags").select_related(
-                "climbable"
-            )
-
-        point = fromstr(f"SRID=4326;POINT ({lon} {lat})")
-
         return (
             Problem.objects.prefetch_related("tags")
             .select_related("climbable")
-            .annotate(dist_km=Distance("climbable__location", point) / 1000)
+            .with_annotations("ascents", "rating")
+            .with_dist_km(lon, lat)
         )
 
 
-class TopoImageList(generics.ListCreateAPIView):
+class TopoImagesView(generics.ListCreateAPIView):
     serializer_class = TopoImageSerializer
     queryset = TopoImage.objects.all()
 
 
-class TopoImageDetail(generics.RetrieveUpdateDestroyAPIView):
+class TopoImageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TopoImageSerializer
     queryset = TopoImage.objects.all()
 

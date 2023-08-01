@@ -1,4 +1,5 @@
 import io
+import random
 
 import pytest
 from PIL import Image
@@ -8,6 +9,7 @@ from django.contrib.gis.geos import fromstr
 
 from rest_framework.test import APIClient
 
+from activities.models import Ascent
 from climbs.models import Climbable, Problem, Tag
 from users.models import User
 
@@ -23,6 +25,20 @@ def add_user():
         return User.objects.create_user(**kwargs)
 
     return _add_user
+
+
+@pytest.fixture
+def add_users(add_user):
+    def _add_users(n):
+        return [
+            add_user(
+                username=f"user {i+1}",
+                email=f"user_{i+1}@example.com",
+            )
+            for i in range(n)
+        ]
+
+    return _add_users
 
 
 @pytest.fixture
@@ -42,13 +58,21 @@ def user_other(add_user):
 
 
 @pytest.fixture
-def location():
-    return fromstr("POINT(59.77591805596081 17.3728775782919)", srid=4326)
+def create_location():
+    def _create_location(lon, lat):
+        return fromstr(f"POINT({lon} {lat})", srid=4326)
+
+    return _create_location
 
 
 @pytest.fixture
-def location_other():
-    return fromstr("POINT(59.940783 17.401228)", srid=4326)
+def location(create_location):
+    return create_location(17.3728775782919, 59.77591805596081)
+
+
+@pytest.fixture
+def location_other(create_location):
+    return create_location(17.401228, 59.940783)
 
 
 @pytest.fixture
@@ -57,6 +81,31 @@ def add_climbable():
         return Climbable.objects.create(**kwargs)
 
     return _add_climbable
+
+
+@pytest.fixture
+def add_climbables(add_climbable, create_location):
+    def _add_climbables(n, names=None, locations=None, types=None):
+        climbables = []
+        for i in range(n):
+            params = {}
+            if names is not None:
+                params["name"] = names[i]
+            if locations is not None:
+                params["location"] = locations[i]
+            if types is not None:
+                params["type"] = types[i]
+            climbables.append(
+                add_climbable(
+                    location=create_location(
+                        random.uniform(-180, 180), random.uniform(-90, 90)
+                    ),
+                    **params,
+                )
+            )
+        return climbables
+
+    return _add_climbables
 
 
 @pytest.fixture
@@ -100,6 +149,29 @@ def add_problem():
         return Problem.objects.create(**kwargs)
 
     return _add_problem
+
+
+@pytest.fixture
+def add_problems(add_problem):
+    def _add_problems(
+        n, climbables, grades=None, descriptions=None, tags=None, names=None
+    ):
+        problems = []
+        for i in range(n):
+            params = {"name": f"problem {i+1}", "climbable": climbables[i]}
+            if grades is not None:
+                params["grade"] = grades[i]
+            if descriptions is not None:
+                params["description"] = descriptions[i]
+            if tags is not None:
+                params["tags"] = tags[i]
+            if names is not None:
+                params["name"] = names[i]
+
+            problems.append(add_problem(**params))
+        return problems
+
+    return _add_problems
 
 
 @pytest.fixture
@@ -152,4 +224,26 @@ def image_file_other():
 def text_file():
     return SimpleUploadedFile(
         "test_file.txt", b"file contents", content_type="text/plain"
+    )
+
+
+@pytest.fixture
+def add_ascent():
+    def _add_ascent(**kwargs):
+        return Ascent.objects.create(**kwargs)
+
+    return _add_ascent
+
+
+@pytest.fixture
+def ascent(add_ascent, problem, user):
+    return add_ascent(
+        problem=problem, user=user, given_rating=4, comment="Yes!"
+    )
+
+
+@pytest.fixture
+def ascent_other(add_ascent, problem_other, user_other):
+    return add_ascent(
+        problem=problem_other, user=user_other, given_rating=3, comment="Knee!"
     )
