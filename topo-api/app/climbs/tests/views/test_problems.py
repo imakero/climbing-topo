@@ -267,3 +267,38 @@ def test_filter_problems_on_rating(
     assert response_problem_names == expected_problem_names
 
 
+@pytest.mark.parametrize(
+    "min_ascents, max_ascents, expected_problems",
+    [
+        (None, None, [1, 2, 3, 4, 5]),
+        (None, 3, [1, 2, 3, 4]),
+        (1, 4, [2, 3, 4]),
+        (4, None, [5]),
+        (0, 4, [1, 2, 3, 4]),
+        (4, 500, [5]),
+    ],
+)
+def test_filter_problems_on_ascents(
+    db,
+    client,
+    problems_with_ascents,
+    min_ascents,
+    max_ascents,
+    expected_problems,
+):
+    assert Problem.objects.count() == 5
+
+    response = client.get(
+        reverse("problems"),
+        get_query_params(min_ascents=min_ascents, max_ascents=max_ascents),
+    )
+
+    assert response.status_code == 200
+    assert len(response.data) == len(expected_problems)
+
+    response_problem_names = set(
+        [problem["name"] for problem in response.data]
+    )
+    expected_problem_names = set([f"problem {i}" for i in expected_problems])
+
+    assert response_problem_names == expected_problem_names

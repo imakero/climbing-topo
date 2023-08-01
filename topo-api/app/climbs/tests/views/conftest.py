@@ -85,3 +85,29 @@ def problems_with_rating(add_ascent, add_climbables, add_problems, add_users):
     add_ascent(user=users[1], problem=problems[4], given_rating=5)
     add_ascent(user=users[2], problem=problems[4], given_rating=5)
 
+
+@pytest.fixture
+def problems_with_ascents(add_ascent, add_climbables, add_problems, add_users):
+    climbables = add_climbables(5)
+    problems = add_problems(5, climbables)
+    users = add_users(5)
+
+    # Let problem 1 have no ascents
+    # Let problem 2 have one ascent
+    add_ascent(user=users[0], problem=problems[1])
+
+    # Let problem 3 have two ascents
+    add_ascent(user=users[0], problem=problems[2])
+    add_ascent(user=users[1], problem=problems[2])
+
+    # Let problem 4 have three ascents
+    add_ascent(user=users[0], problem=problems[3])
+    add_ascent(user=users[1], problem=problems[3])
+    add_ascent(user=users[2], problem=problems[3])
+
+    # Let problem 5 have five ascents
+    add_ascent(user=users[0], problem=problems[4])
+    add_ascent(user=users[1], problem=problems[4])
+    add_ascent(user=users[2], problem=problems[4])
+    add_ascent(user=users[3], problem=problems[4])
+    add_ascent(user=users[4], problem=problems[4])
