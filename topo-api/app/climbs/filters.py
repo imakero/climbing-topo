@@ -5,13 +5,20 @@ from django_filters import rest_framework as filters
 from .models import Problem
 
 
+class CsvFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        if value:
+            value = value.split(",")
+        return super().filter(qs, value)
+
+
 class ProblemFilter(filters.FilterSet):
-    grade = filters.CharFilter(field_name="grade", lookup_expr="iexact")
+    grade = CsvFilter(field_name="grade", lookup_expr="lowercase__in")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     description = filters.CharFilter(
         field_name="description", lookup_expr="icontains"
     )
-    tags = filters.CharFilter(field_name="tags__name", lookup_expr="iexact")
+    tags = CsvFilter(field_name="tags__name", lookup_expr="lowercase__in")
     climbable = filters.CharFilter(
         field_name="climbable__name", lookup_expr="icontains"
     )
