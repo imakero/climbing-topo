@@ -8,6 +8,7 @@ from django.contrib.gis.geos import fromstr
 
 from rest_framework.test import APIClient
 
+from activities.models import Ascent
 from climbs.models import Climbable, Problem, Tag
 from users.models import User
 
@@ -152,4 +153,26 @@ def image_file_other():
 def text_file():
     return SimpleUploadedFile(
         "test_file.txt", b"file contents", content_type="text/plain"
+    )
+
+
+@pytest.fixture
+def add_ascent():
+    def _add_ascent(**kwargs):
+        return Ascent.objects.create(**kwargs)
+
+    return _add_ascent
+
+
+@pytest.fixture
+def ascent(add_ascent, problem, user):
+    return add_ascent(
+        problem=problem, user=user, given_rating=4, comment="Yes!"
+    )
+
+
+@pytest.fixture
+def ascent_other(add_ascent, problem_other, user_other):
+    return add_ascent(
+        problem=problem_other, user=user_other, given_rating=3, comment="Knee!"
     )
