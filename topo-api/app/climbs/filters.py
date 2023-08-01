@@ -1,5 +1,6 @@
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import fromstr
+from django.db.models import Q
 from django_filters import rest_framework as filters
 
 from .models import Problem
@@ -66,4 +67,5 @@ class ProblemFilter(filters.FilterSet):
         return queryset.filter(rating__gte=value)
 
     def filter_max_rating(self, queryset, name, value):
-        return queryset.filter(rating__lte=value)
+        # Include problems that has not been rated.
+        return queryset.filter(Q(rating__lte=value) | Q(rating__isnull=True))
