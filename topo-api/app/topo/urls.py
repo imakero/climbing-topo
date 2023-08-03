@@ -8,6 +8,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/", include("climbs.urls")),
     path("api/v1/", include("activities.urls")),
+    path("api/v1/auth/", include("users.urls")),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
 
