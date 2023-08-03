@@ -44,12 +44,15 @@ INSTALLED_APPS = [
     # Third party
     "debug_toolbar",
     "rest_framework",
+    "rest_framework.authtoken",
     "rest_framework_gis",
     "corsheaders",
     "django_filters",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     # Local
     "climbs",
     "users",
@@ -171,12 +174,19 @@ REST_FRAMEWORK = {
         "django_filters.rest_framework.DjangoFilterBackend",
     ),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 
 SITE_ID = 1
+
+REST_AUTH = {
+    "USE_JWT": True,
+    "JWT_AUTH_COOKIE": "jwt",
+    "JWT_AUTH_REFRESH_COOKIE": "jwt_refresh",
+    "JWT_AUTH_HTTPONLY": False,
+}
 
 SIMPLE_JWT = {
     "SIGNING_KEY": os.environ.get("SIMPLE_JWT_SECRET_KEY", SECRET_KEY),
