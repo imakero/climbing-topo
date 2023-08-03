@@ -58,6 +58,16 @@ def user_other(add_user):
 
 
 @pytest.fixture
+def admin_user(add_user):
+    return add_user(
+        username="adminuser",
+        password="adminpass",
+        is_staff=True,
+        is_superuser=True,
+    )
+
+
+@pytest.fixture
 def create_location():
     def _create_location(lon, lat):
         return fromstr(f"POINT({lon} {lat})", srid=4326)
