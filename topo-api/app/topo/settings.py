@@ -40,11 +40,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.gis",
+    "django.contrib.sites",
+    # Third party
     "debug_toolbar",
     "rest_framework",
     "rest_framework_gis",
     "corsheaders",
     "django_filters",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
     # Local
     "climbs",
     "users",
@@ -170,6 +175,8 @@ REST_FRAMEWORK = {
     ),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
+
+SITE_ID = 1
 
 SIMPLE_JWT = {
     "SIGNING_KEY": os.environ.get("SIMPLE_JWT_SECRET_KEY", SECRET_KEY),
