@@ -1,0 +1,145 @@
+[
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "moderator",
+    "permissions": [
+      [
+        "add_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "change_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "delete_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "view_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "add_climbable",
+        "climbs",
+        "climbable"
+      ],
+      [
+        "change_climbable",
+        "climbs",
+        "climbable"
+      ],
+      [
+        "delete_climbable",
+        "climbs",
+        "climbable"
+      ],
+      [
+        "view_climbable",
+        "climbs",
+        "climbable"
+      ],
+      [
+        "add_problem",
+        "climbs",
+        "problem"
+      ],
+      [
+        "change_problem",
+        "climbs",
+        "problem"
+      ],
+      [
+        "delete_problem",
+        "climbs",
+        "problem"
+      ],
+      [
+        "view_problem",
+        "climbs",
+        "problem"
+      ],
+      [
+        "view_tag",
+        "climbs",
+        "tag"
+      ],
+      [
+        "add_topoimage",
+        "climbs",
+        "topoimage"
+      ],
+      [
+        "change_topoimage",
+        "climbs",
+        "topoimage"
+      ],
+      [
+        "delete_topoimage",
+        "climbs",
+        "topoimage"
+      ],
+      [
+        "view_topoimage",
+        "climbs",
+        "topoimage"
+      ]
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 2,
+  "fields": {
+    "name": "user",
+    "permissions": [
+      [
+        "add_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "change_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "delete_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "view_ascent",
+        "activities",
+        "ascent"
+      ],
+      [
+        "view_climbable",
+        "climbs",
+        "climbable"
+      ],
+      [
+        "view_problem",
+        "climbs",
+        "problem"
+      ],
+      [
+        "view_tag",
+        "climbs",
+        "tag"
+      ],
+      [
+        "view_topoimage",
+        "climbs",
+        "topoimage"
+      ]
+    ]
+  }
+}
+]
