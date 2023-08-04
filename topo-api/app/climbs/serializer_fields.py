@@ -14,3 +14,11 @@ class GpsPinField(serializers.Field):
 
     def to_internal_value(self, data):
         return fromstr(f"SRID=4326;POINT ({data['lon']} {data['lat']})")
+
+
+class TagsField(serializers.PrimaryKeyRelatedField):
+    def to_representation(self, value):
+        return value.name
+
+    def to_internal_value(self, data):
+        return super().to_internal_value(data)
