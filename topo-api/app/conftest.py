@@ -66,12 +66,25 @@ def user_other(add_user):
 
 
 @pytest.fixture
-def admin_user(add_user):
+def moderator_user(add_user):
+    user = add_user(
+        username="moderatoruser",
+        password="moderatorpass",
+        is_staff=False,
+        is_superuser=False,
+    )
+    moderator_group = Group.objects.get(name="moderator")
+    user.groups.add(moderator_group)
+    return user
+
+
+@pytest.fixture
+def regular_user(add_user):
     return add_user(
-        username="adminuser",
-        password="adminpass",
-        is_staff=True,
-        is_superuser=True,
+        username="regularuser",
+        password="regularpass",
+        is_staff=False,
+        is_superuser=False,
     )
 
 
