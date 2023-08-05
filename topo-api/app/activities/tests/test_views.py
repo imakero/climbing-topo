@@ -62,6 +62,16 @@ def test_get_ascents(db, client, ascent, ascent_other):
     assert ascent_data_other["comment"] == ascent_other.comment
 
 
+def test_can_get_ascents_without_auth(db, client, ascent, ascent_other):
+    assert Ascent.objects.count() == 2
+
+    client.force_authenticate(user=None)
+    response = client.get(reverse("ascents"))
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.data) == 2
+
+
 def test_filter_ascents_by_problem(db, client, ascent, ascent_other):
     assert Ascent.objects.count() == 2
 
@@ -112,7 +122,15 @@ def test_get_ascent(db, client, ascent):
     assert ascent_data["comment"] == ascent.comment
 
 
+def test_can_get_ascent_without_auth(db, client, ascent):
+    client.force_authenticate(user=None)
+    response = client.get(reverse("ascents"))
+
+    assert response.status_code == status.HTTP_200_OK
+
+
 def test_update_ascent(db, client, ascent):
+    client.force_authenticate(user=ascent.user)
     response = client.patch(
         reverse("ascent", kwargs={"pk": ascent.id}),
         {"comment": "Updated comment!", "given_rating": 5},
@@ -128,6 +146,7 @@ def test_update_ascent(db, client, ascent):
 def test_cannot_update_ascent_problem_or_user(
     db, client, ascent, problem_other, user_other
 ):
+    client.force_authenticate(user=ascent.user)
     response = client.patch(
         reverse("ascent", kwargs={"pk": ascent.id}),
         {"problem": problem_other.id, "user": user_other.id},
@@ -140,10 +159,35 @@ def test_cannot_update_ascent_problem_or_user(
     assert updated_ascent.user != user_other
 
 
+def test_user_cannot_update_ascent_by_other_user(
+    db, client, ascent_other, user
+):
+    client.force_authenticate(user=user)
+    response = client.patch(
+        reverse("ascent", kwargs={"pk": ascent_other.id}),
+        {"comment": "Updated comment!", "given_rating": 5},
+    )
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+    ascent_other.refresh_from_db()
+    assert ascent_other.comment != "Updated comment!"
+    assert ascent_other.given_rating != 5
+
+
 def test_delete_ascent(db, client, ascent):
     assert Ascent.objects.count() == 1
 
+    client.force_authenticate(user=ascent.user)
     response = client.delete(reverse("ascent", kwargs={"pk": ascent.id}))
 
     assert response.status_code == status.HTTP_204_NO_CONTENT
     assert Ascent.objects.count() == 0
+
+
+def test_user_cannot_delete_ascent_by_other_user(
+    db, client, ascent_other, user
+):
+    client.force_authenticate(user=user)
+    response = client.delete(reverse("ascent", kwargs={"pk": ascent_other.id}))
+
+    assert response.status_code == status.HTTP_403_FORBIDDEN

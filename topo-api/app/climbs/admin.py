@@ -16,4 +16,11 @@ class ProblemAdmin(admin.ModelAdmin):
     search_fields = ("name", "climbable__name")
 
 
-admin.site.register(Tag)
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    readonly_fields = ("id",)
+    list_display = (
+        "id",
+        "name",
+    )
+    search_fields = ("name",)

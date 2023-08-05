@@ -4,7 +4,9 @@ import random
 import pytest
 from PIL import Image
 
+from django.contrib.auth.models import Group
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.contrib.gis.geos import fromstr
 
 from rest_framework.test import APIClient
@@ -12,6 +14,12 @@ from rest_framework.test import APIClient
 from activities.models import Ascent
 from climbs.models import Climbable, Problem, Tag
 from users.models import User
+
+
+@pytest.fixture(scope="session", autouse=True)
+def setup_database(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        call_command("loaddata", "fixtures/groups.json")
 
 
 @pytest.fixture
@@ -54,6 +62,29 @@ def user_other(add_user):
         username="testuser_other",
         password="testpass_other",
         email="testuser_other@example.com",
+    )
+
+
+@pytest.fixture
+def moderator_user(add_user):
+    user = add_user(
+        username="moderatoruser",
+        password="moderatorpass",
+        is_staff=False,
+        is_superuser=False,
+    )
+    moderator_group = Group.objects.get(name="moderator")
+    user.groups.add(moderator_group)
+    return user
+
+
+@pytest.fixture
+def regular_user(add_user):
+    return add_user(
+        username="regularuser",
+        password="regularpass",
+        is_staff=False,
+        is_superuser=False,
     )
 
 

@@ -53,6 +53,86 @@ def test_get_problem_list(db, client, problem, problem_other, ascent):
         compare_problem(response_problem, problem)
 
 
+def test_can_get_problems_without_auth(db, client, problem, problem_other):
+    assert Problem.objects.count() == 2
+
+    response = client.get(reverse("problems"))
+
+    assert response.status_code == 200
+    assert len(response.data) == 2
+
+
+def test_create_problem(
+    db, client, climbable, moderator_user, tag_crimpy, tag_slopers
+):
+    assert Problem.objects.count() == 0
+
+    client.force_authenticate(user=moderator_user)
+    response = client.post(
+        reverse("problems"),
+        {
+            "name": "problem1",
+            "description": "description",
+            "grade": "8A",
+            "climbable": climbable.id,
+            "tags": [tag_crimpy.id, tag_slopers.id],
+        },
+    )
+
+    assert response.status_code == 201
+    assert Problem.objects.count() == 1
+
+    problem = Problem.objects.first()
+    assert problem.name == "problem1"
+    assert problem.description == "description"
+    assert problem.grade == "8A"
+    assert problem.climbable == climbable
+    assert problem.tags.count() == 2
+    assert tag_crimpy in problem.tags.all()
+    assert tag_slopers in problem.tags.all()
+
+
+def test_regular_user_cannot_create_problems(
+    db, client, climbable, regular_user
+):
+    assert Problem.objects.count() == 0
+
+    client.force_authenticate(user=regular_user)
+    response = client.post(
+        reverse("problems"),
+        {
+            "name": "problem1",
+            "description": "description",
+            "grade": "8A",
+            "climbable": climbable.id,
+        },
+    )
+
+    assert response.status_code == 403
+    assert Problem.objects.count() == 0
+
+
+def test_moderator_user_can_create_problems(
+    db, client, climbable, moderator_user
+):
+    assert Problem.objects.count() == 0
+
+    client.force_authenticate(user=moderator_user)
+    response = client.post(
+        reverse("problems"),
+        {
+            "name": "problem1",
+            "description": "description",
+            "grade": "8A",
+            "climbable": climbable.id,
+            "tags": [],
+        },
+    )
+
+    assert response.status_code == 201
+    assert Problem.objects.count() == 1
+
+
 @pytest.mark.parametrize(
     "grade, expected_problems",
     [
