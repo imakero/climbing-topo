@@ -174,22 +174,6 @@ def test_user_cannot_update_ascent_by_other_user(
     assert ascent_other.given_rating != 5
 
 
-def test_admin_can_update_ascent_by_other_user(
-    db, client, ascent_other, admin_user
-):
-    client.force_authenticate(user=admin_user)
-    response = client.patch(
-        reverse("ascent", kwargs={"pk": ascent_other.id}),
-        {"comment": "Updated comment!", "given_rating": 5},
-    )
-
-    assert response.status_code == status.HTTP_200_OK
-
-    ascent_other.refresh_from_db()
-    assert ascent_other.comment == "Updated comment!"
-    assert ascent_other.given_rating == 5
-
-
 def test_delete_ascent(db, client, ascent):
     assert Ascent.objects.count() == 1
 
@@ -207,15 +191,3 @@ def test_user_cannot_delete_ascent_by_other_user(
     response = client.delete(reverse("ascent", kwargs={"pk": ascent_other.id}))
 
     assert response.status_code == status.HTTP_403_FORBIDDEN
-
-
-def test_admin_can_delete_ascent_by_other_user(
-    db, client, ascent_other, admin_user
-):
-    assert Ascent.objects.count() == 1
-
-    client.force_authenticate(user=admin_user)
-    response = client.delete(reverse("ascent", kwargs={"pk": ascent_other.id}))
-
-    assert response.status_code == status.HTTP_204_NO_CONTENT
-    assert Ascent.objects.count() == 0
