@@ -26,6 +26,22 @@ class ProblemsView(generics.ListCreateAPIView):
         )
 
 
+class ProblemView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProblemSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+    def get_queryset(self):
+        lon = self.request.query_params.get("lon", None)
+        lat = self.request.query_params.get("lat", None)
+
+        return (
+            Problem.objects.prefetch_related("tags")
+            .select_related("climbable")
+            .with_annotations("ascents", "rating")
+            .with_dist_km(lon, lat)
+        )
+
+
 class TopoImagesView(generics.ListCreateAPIView):
     serializer_class = TopoImageSerializer
     queryset = TopoImage.objects.all()
