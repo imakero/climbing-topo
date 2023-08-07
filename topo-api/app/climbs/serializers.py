@@ -35,7 +35,7 @@ class ProblemSerializer(serializers.ModelSerializer):
             "climbable",
         ]
         read_only_fields = ["location", "tags", "dist_km", "ascents", "rating"]
-        write_only_fields = ["climbable"]
+        extra_kwargs = {"climbable": {"write_only": True}}
 
 
 class TopoImageSerializer(serializers.ModelSerializer):
