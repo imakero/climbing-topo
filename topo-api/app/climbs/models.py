@@ -37,14 +37,14 @@ class Tag(models.Model):
         return self.name
 
 
-class TopoImage(models.Model):
+class LocationImage(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=f"topo_images/")
+    image = models.ImageField(upload_to=f"location_images/")
 
     def save(self, *args, **kwargs):
         # Remove old topo image from disk if it's being updated
         if self.pk:
-            old_object = TopoImage.objects.get(pk=self.pk)
+            old_object = LocationImage.objects.get(pk=self.pk)
             if self.image != old_object.image:
                 old_object.image.delete(save=False)
 

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from climbs.serializer_fields import LocationField
 
-from climbs.models import Problem, TopoImage, Tag
+from climbs.models import Problem, LocationImage, Tag
 from climbs.serializer_fields import TagsField
 
 
@@ -31,5 +31,5 @@ class ProblemSerializer(serializers.ModelSerializer):
 
 class TopoImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TopoImage
+        model = LocationImage
         fields = ["id", "location", "image"]
