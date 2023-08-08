@@ -26,15 +26,10 @@ class TagsField(serializers.PrimaryKeyRelatedField):
 
 
 class LocationField(serializers.Field):
-    class LocationSerializer(serializers.ModelSerializer):
-        position = GpsPinField()
-
-        class Meta:
-            model = Location
-            fields = ["id", "name", "type", "position"]
-
     def to_representation(self, value):
-        return self.LocationSerializer(value).data
+        from climbs.serializers import LocationSerializer
+
+        return LocationSerializer(value).data
 
     def to_internal_value(self, data):
         return Location.objects.get(pk=data)
