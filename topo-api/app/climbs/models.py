@@ -42,7 +42,7 @@ class LocationImage(models.Model):
     image = models.ImageField(upload_to=f"location_images/")
 
     def save(self, *args, **kwargs):
-        # Remove old topo image from disk if it's being updated
+        # Remove old Location image from disk if it's being updated
         if self.pk:
             old_object = LocationImage.objects.get(pk=self.pk)
             if self.image != old_object.image:
@@ -51,4 +51,4 @@ class LocationImage(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Topo image for {self.location.name} - {self.image.name}"
+        return f"Location image for {self.location.name} - {self.image.name}"

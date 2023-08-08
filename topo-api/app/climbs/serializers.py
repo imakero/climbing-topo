@@ -29,7 +29,7 @@ class ProblemSerializer(serializers.ModelSerializer):
         read_only_fields = ["tags", "dist_km", "ascents", "rating"]
 
 
-class TopoImageSerializer(serializers.ModelSerializer):
+class LocationImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationImage
         fields = ["id", "location", "image"]

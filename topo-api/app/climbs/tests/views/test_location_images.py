@@ -12,7 +12,7 @@ def test_add_location_image(
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.post(
-            reverse("topos"),
+            reverse("location-images"),
             data={"location": location.id, "image": image_file},
             format="multipart",
         )
@@ -34,7 +34,7 @@ def test_add_location_image_fails_for_txt_file(
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.post(
-            reverse("topos"),
+            reverse("location-images"),
             {"location": location.id, "image": text_file},
             format="multipart",
         )
@@ -47,7 +47,7 @@ def test_add_location_image_fails_for_txt_file(
 def test_list_location_images(
     db, client, location_image, location_image_other
 ):
-    response = client.get(reverse("topos"))
+    response = client.get(reverse("location-images"))
 
     assert response.status_code == 200
     assert len(response.data) == 2
@@ -63,7 +63,7 @@ def test_list_location_images(
 
 
 def test_get_location_image(db, client, location_image):
-    response = client.get(reverse("topo", args=[location_image.id]))
+    response = client.get(reverse("location-image", args=[location_image.id]))
 
     assert response.status_code == 200
     assert response.data["id"] == location_image.id
@@ -75,7 +75,7 @@ def test_update_location_for_location_image(
     db, client, location_image, location_other
 ):
     response = client.patch(
-        reverse("topo", args=[location_image.id]),
+        reverse("location-image", args=[location_image.id]),
         {"location": location_other.id},
         format="multipart",
     )
@@ -95,7 +95,7 @@ def test_update_image_for_location_image(
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.patch(
-            reverse("topo", args=[location_image.id]),
+            reverse("location-image", args=[location_image.id]),
             {"image": image_file_other},
             format="multipart",
         )
@@ -115,7 +115,9 @@ def test_delete_location_image(db, client, location_image, tmp_media_folder):
     assert LocationImage.objects.count() == 1
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
-        response = client.delete(reverse("topo", args=[location_image.id]))
+        response = client.delete(
+            reverse("location-image", args=[location_image.id])
+        )
 
         assert response.status_code == 204
         assert LocationImage.objects.count() == 0
