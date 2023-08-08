@@ -1,20 +1,12 @@
 from rest_framework import serializers
+from climbs.serializer_fields import LocationField
 
-from climbs.models import Problem, Climbable, TopoImage, Tag
-from climbs.serializer_fields import GpsPinField, TagsField
-
-
-class LocationSerializer(serializers.ModelSerializer):
-    on = serializers.CharField(source="name")
-    coordinates = GpsPinField(source="location")
-
-    class Meta:
-        model = Climbable
-        fields = ["on", "coordinates"]
+from climbs.models import Problem, LocationImage, Tag
+from climbs.serializer_fields import TagsField
 
 
 class ProblemSerializer(serializers.ModelSerializer):
-    location = LocationSerializer(source="climbable", read_only=True)
+    location = LocationField()
     tags = TagsField(many=True, queryset=Tag.objects.all())
     dist_km = serializers.FloatField(read_only=True)
     ascents = serializers.IntegerField(read_only=True)
@@ -32,13 +24,12 @@ class ProblemSerializer(serializers.ModelSerializer):
             "dist_km",
             "ascents",
             "rating",
-            "climbable",
+            "location",
         ]
-        read_only_fields = ["location", "tags", "dist_km", "ascents", "rating"]
-        extra_kwargs = {"climbable": {"write_only": True}}
+        read_only_fields = ["tags", "dist_km", "ascents", "rating"]
 
 
 class TopoImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = TopoImage
-        fields = ["id", "climbable", "image"]
+        model = LocationImage
+        fields = ["id", "location", "image"]

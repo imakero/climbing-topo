@@ -12,7 +12,7 @@ from django.contrib.gis.geos import fromstr
 from rest_framework.test import APIClient
 
 from activities.models import Ascent
-from climbs.models import Climbable, Problem, Tag
+from climbs.models import Location, Problem, Tag
 from users.models import User
 
 
@@ -89,65 +89,65 @@ def regular_user(add_user):
 
 
 @pytest.fixture
-def create_location():
-    def _create_location(lon, lat):
+def create_position():
+    def _create_position(lon, lat):
         return fromstr(f"POINT({lon} {lat})", srid=4326)
 
-    return _create_location
+    return _create_position
 
 
 @pytest.fixture
-def location(create_location):
-    return create_location(17.3728775782919, 59.77591805596081)
+def position(create_position):
+    return create_position(17.3728775782919, 59.77591805596081)
 
 
 @pytest.fixture
-def location_other(create_location):
-    return create_location(17.401228, 59.940783)
+def position_other(create_position):
+    return create_position(17.401228, 59.940783)
 
 
 @pytest.fixture
-def add_climbable():
-    def _add_climbable(**kwargs):
-        return Climbable.objects.create(**kwargs)
+def add_location():
+    def _add_location(**kwargs):
+        return Location.objects.create(**kwargs)
 
-    return _add_climbable
+    return _add_location
 
 
 @pytest.fixture
-def add_climbables(add_climbable, create_location):
-    def _add_climbables(n, names=None, locations=None, types=None):
-        climbables = []
+def add_locations(add_location, create_position):
+    def _add_locations(n, names=None, positions=None, types=None):
+        locations = []
         for i in range(n):
             params = {}
             if names is not None:
                 params["name"] = names[i]
-            if locations is not None:
-                params["location"] = locations[i]
+            if positions is not None:
+                params["position"] = positions[i]
             if types is not None:
                 params["type"] = types[i]
-            climbables.append(
-                add_climbable(
-                    location=create_location(
+            locations.append(
+                add_location(
+                    position=create_position(
                         random.uniform(-180, 180), random.uniform(-90, 90)
                     ),
                     **params,
                 )
             )
-        return climbables
+        return locations
 
-    return _add_climbables
-
-
-@pytest.fixture
-def climbable(add_climbable, location):
-    return add_climbable(name="Svälthammaren", type="BL", location=location)
+    return _add_locations
 
 
 @pytest.fixture
-def climbable_other(add_climbable, location_other):
-    return add_climbable(
-        name="Traversblocket", type="BL", location=location_other
+def location(add_location, position):
+    return add_location(name="Svälthammaren", type="BL", position=position)
+
+
+@pytest.fixture
+def location_other(add_location, position_other):
+    return add_location(
+        name="Traversblocket", type="BL", position=position_other
     )
 
 
@@ -185,11 +185,11 @@ def add_problem():
 @pytest.fixture
 def add_problems(add_problem):
     def _add_problems(
-        n, climbables, grades=None, descriptions=None, tags=None, names=None
+        n, locations, grades=None, descriptions=None, tags=None, names=None
     ):
         problems = []
         for i in range(n):
-            params = {"name": f"problem {i+1}", "climbable": climbables[i]}
+            params = {"name": f"problem {i+1}", "location": locations[i]}
             if grades is not None:
                 params["grade"] = grades[i]
             if descriptions is not None:
@@ -206,9 +206,9 @@ def add_problems(add_problem):
 
 
 @pytest.fixture
-def problem(add_problem, climbable, tag_crimpy, tag_slopers):
+def problem(add_problem, location, tag_crimpy, tag_slopers):
     return add_problem(
-        climbable=climbable,
+        location=location,
         name="Watchtower",
         description="Classic testpiece!",
         grade="7C",
@@ -217,9 +217,9 @@ def problem(add_problem, climbable, tag_crimpy, tag_slopers):
 
 
 @pytest.fixture
-def problem_other(add_problem, climbable_other, tag_crimpy, tag_slopers):
+def problem_other(add_problem, location_other, tag_crimpy, tag_slopers):
     return add_problem(
-        climbable=climbable_other,
+        location=location_other,
         name="Ampere",
         description="Might be soft with the kneebar beta?",
         grade="8A",

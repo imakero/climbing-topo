@@ -26,24 +26,44 @@
         "ascent"
       ],
       [
-        "add_climbable",
+        "add_location",
         "climbs",
-        "climbable"
+        "location"
       ],
       [
-        "change_climbable",
+        "change_location",
         "climbs",
-        "climbable"
+        "location"
       ],
       [
-        "delete_climbable",
+        "delete_location",
         "climbs",
-        "climbable"
+        "location"
       ],
       [
-        "view_climbable",
+        "view_location",
         "climbs",
-        "climbable"
+        "location"
+      ],
+      [
+        "add_locationimage",
+        "climbs",
+        "locationimage"
+      ],
+      [
+        "change_locationimage",
+        "climbs",
+        "locationimage"
+      ],
+      [
+        "delete_locationimage",
+        "climbs",
+        "locationimage"
+      ],
+      [
+        "view_locationimage",
+        "climbs",
+        "locationimage"
       ],
       [
         "add_problem",
@@ -69,26 +89,6 @@
         "view_tag",
         "climbs",
         "tag"
-      ],
-      [
-        "add_topoimage",
-        "climbs",
-        "topoimage"
-      ],
-      [
-        "change_topoimage",
-        "climbs",
-        "topoimage"
-      ],
-      [
-        "delete_topoimage",
-        "climbs",
-        "topoimage"
-      ],
-      [
-        "view_topoimage",
-        "climbs",
-        "topoimage"
       ]
     ]
   }
@@ -120,9 +120,14 @@
         "ascent"
       ],
       [
-        "view_climbable",
+        "view_location",
         "climbs",
-        "climbable"
+        "location"
+      ],
+      [
+        "view_locationimage",
+        "climbs",
+        "locationimage"
       ],
       [
         "view_problem",
@@ -133,11 +138,6 @@
         "view_tag",
         "climbs",
         "tag"
-      ],
-      [
-        "view_topoimage",
-        "climbs",
-        "topoimage"
       ]
     ]
   }

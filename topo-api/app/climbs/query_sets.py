@@ -24,5 +24,5 @@ class ProblemQuerySet(models.QuerySet):
 
         point = fromstr(f"SRID=4326;POINT ({lon} {lat})")
         return self.annotate(
-            dist_km=Distance("climbable__location", point) / 1000,
+            dist_km=Distance("location__position", point) / 1000,
         )

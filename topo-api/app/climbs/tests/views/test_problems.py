@@ -27,14 +27,14 @@ def compare_problem(response_problem, problem):
         assert response_problem[field] == getattr(problem, field)
 
     location = response_problem["location"]
-    assert location["on"] == problem.climbable.name
+    assert location["name"] == problem.location.name
 
-    coordinates = location["coordinates"]
-    assert coordinates["lon"] == problem.climbable.location.x
-    assert coordinates["lat"] == problem.climbable.location.y
+    position = location["position"]
+    assert position["lon"] == problem.location.position.x
+    assert position["lat"] == problem.location.position.y
 
-    x, y = problem.climbable.location.x, problem.climbable.location.y
-    assert coordinates["google_maps_string"] == f"{y}, {x}"
+    x, y = problem.location.position.x, problem.location.position.y
+    assert position["google_maps_string"] == f"{y}, {x}"
 
 
 def test_get_problem_list(db, client, problem, problem_other, ascent):
@@ -63,7 +63,7 @@ def test_can_get_problems_without_auth(db, client, problem, problem_other):
 
 
 def test_create_problem(
-    db, client, climbable, moderator_user, tag_crimpy, tag_slopers
+    db, client, location, moderator_user, tag_crimpy, tag_slopers
 ):
     assert Problem.objects.count() == 0
 
@@ -74,7 +74,7 @@ def test_create_problem(
             "name": "problem1",
             "description": "description",
             "grade": "8A",
-            "climbable": climbable.id,
+            "location": location.id,
             "tags": [tag_crimpy.id, tag_slopers.id],
         },
     )
@@ -86,14 +86,14 @@ def test_create_problem(
     assert problem.name == "problem1"
     assert problem.description == "description"
     assert problem.grade == "8A"
-    assert problem.climbable == climbable
+    assert problem.location == location
     assert problem.tags.count() == 2
     assert tag_crimpy in problem.tags.all()
     assert tag_slopers in problem.tags.all()
 
 
 def test_regular_user_cannot_create_problems(
-    db, client, climbable, regular_user
+    db, client, location, regular_user
 ):
     assert Problem.objects.count() == 0
 
@@ -104,7 +104,7 @@ def test_regular_user_cannot_create_problems(
             "name": "problem1",
             "description": "description",
             "grade": "8A",
-            "climbable": climbable.id,
+            "location": location.id,
         },
     )
 
@@ -113,7 +113,7 @@ def test_regular_user_cannot_create_problems(
 
 
 def test_moderator_user_can_create_problems(
-    db, client, climbable, moderator_user
+    db, client, location, moderator_user
 ):
     assert Problem.objects.count() == 0
 
@@ -124,7 +124,7 @@ def test_moderator_user_can_create_problems(
             "name": "problem1",
             "description": "description",
             "grade": "8A",
-            "climbable": climbable.id,
+            "location": location.id,
             "tags": [],
         },
     )
@@ -144,10 +144,10 @@ def test_moderator_user_can_create_problems(
     ],
 )
 def test_filter_problems_on_grade(
-    db, client, climbable, add_problems, grade, expected_problems
+    db, client, location, add_problems, grade, expected_problems
 ):
     problems = add_problems(
-        5, [climbable] * 5, grades=["8A", "7C+", "7c+", "7C", "6b"]
+        5, [location] * 5, grades=["8A", "7C+", "7c+", "7C", "6b"]
     )
 
     response = client.get(
@@ -246,7 +246,7 @@ def test_filter_problems_on_description(
         ("svält", [1, 2, 3]),
     ],
 )
-def test_filter_problems_on_climbable_name(
+def test_filter_problems_on_location_name(
     db,
     client,
     problems_with_searchables,
@@ -257,7 +257,7 @@ def test_filter_problems_on_climbable_name(
 
     response = client.get(
         reverse("problems"),
-        get_query_params(climbable=search_term),
+        get_query_params(location=search_term),
     )
 
     assert response.status_code == 200
@@ -281,7 +281,7 @@ def test_filter_problems_on_climbable_name(
     ],
 )
 def test_filter_problems_on_tags(
-    db, client, add_problem, add_tag, climbable, search_tags, expected_problems
+    db, client, add_problem, add_tag, location, search_tags, expected_problems
 ):
     assert Problem.objects.count() == 0
     assert Tag.objects.count() == 0
@@ -298,7 +298,7 @@ def test_filter_problems_on_tags(
     p4_tags = []
 
     for i, tags in enumerate([p1_tags, p2_tags, p3_tags, p4_tags]):
-        add_problem(name=f"problem{i+1}", tags=tags, climbable=climbable)
+        add_problem(name=f"problem{i+1}", tags=tags, location=location)
 
     response = client.get(reverse("problems"), data={"tags": f"{search_tags}"})
 
@@ -450,7 +450,7 @@ def test_update_problem(
     client,
     problem,
     moderator_user,
-    climbable_other,
+    location_other,
     tag_crimpy,
     tag_slopers,
 ):
@@ -458,7 +458,7 @@ def test_update_problem(
     response = client.patch(
         reverse("problem", kwargs={"pk": problem.id}),
         {
-            "climbable": climbable_other.id,
+            "location": location_other.id,
             "name": "new name",
             "description": "new description",
             "grade": "8A",
@@ -472,7 +472,7 @@ def test_update_problem(
     assert problem.name == "new name"
     assert problem.description == "new description"
     assert problem.grade == "8A"
-    assert problem.climbable == climbable_other
+    assert problem.location == location_other
     assert problem.tags.count() == 1
     assert tag_crimpy in problem.tags.all()
     assert tag_slopers not in problem.tags.all()

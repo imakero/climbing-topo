@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from climbs.filters import ProblemFilter
-from climbs.models import Problem, TopoImage
+from climbs.models import Problem, LocationImage
 from climbs.serializers import ProblemSerializer, TopoImageSerializer
 
 
@@ -20,7 +20,7 @@ class ProblemsView(generics.ListCreateAPIView):
 
         return (
             Problem.objects.prefetch_related("tags")
-            .select_related("climbable")
+            .select_related("location")
             .with_annotations("ascents", "rating")
             .with_dist_km(lon, lat)
         )
@@ -36,7 +36,7 @@ class ProblemView(generics.RetrieveUpdateDestroyAPIView):
 
         return (
             Problem.objects.prefetch_related("tags")
-            .select_related("climbable")
+            .select_related("location")
             .with_annotations("ascents", "rating")
             .with_dist_km(lon, lat)
         )
@@ -44,12 +44,12 @@ class ProblemView(generics.RetrieveUpdateDestroyAPIView):
 
 class TopoImagesView(generics.ListCreateAPIView):
     serializer_class = TopoImageSerializer
-    queryset = TopoImage.objects.all()
+    queryset = LocationImage.objects.all()
 
 
 class TopoImageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TopoImageSerializer
-    queryset = TopoImage.objects.all()
+    queryset = LocationImage.objects.all()
 
     def perform_destroy(self, request, *args, **kwargs):
         instance = self.get_object()
