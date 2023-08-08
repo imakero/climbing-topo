@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from climbs.serializer_fields import LocationField
 
-from climbs.models import Problem, LocationImage, Tag
-from climbs.serializer_fields import TagsField
+from climbs.models import Problem, Location, LocationImage, Tag
+from climbs.serializer_fields import TagsField, GpsPinField
 
 
 class ProblemSerializer(serializers.ModelSerializer):
@@ -27,6 +27,14 @@ class ProblemSerializer(serializers.ModelSerializer):
             "location",
         ]
         read_only_fields = ["tags", "dist_km", "ascents", "rating"]
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    position = GpsPinField()
+
+    class Meta:
+        model = Location
+        fields = ["id", "name", "type", "position"]
 
 
 class LocationImageSerializer(serializers.ModelSerializer):
