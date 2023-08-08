@@ -2,8 +2,12 @@ from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from climbs.filters import ProblemFilter
-from climbs.models import Problem, LocationImage
-from climbs.serializers import ProblemSerializer, LocationImageSerializer
+from climbs.models import Problem, Location, LocationImage
+from climbs.serializers import (
+    ProblemSerializer,
+    LocationImageSerializer,
+    LocationSerializer,
+)
 
 
 class ProblemsView(generics.ListCreateAPIView):
@@ -40,6 +44,18 @@ class ProblemView(generics.RetrieveUpdateDestroyAPIView):
             .with_annotations("ascents", "rating")
             .with_dist_km(lon, lat)
         )
+
+
+class LocationsView(generics.ListCreateAPIView):
+    serializer_class = LocationSerializer
+    queryset = Location.objects.all()
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class LocationView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LocationSerializer
+    queryset = Location.objects.all()
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
 
 
 class LocationImagesView(generics.ListCreateAPIView):
