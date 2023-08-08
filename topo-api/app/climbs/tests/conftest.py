@@ -19,19 +19,19 @@ def add_topo_image(tmp_media_folder):
 
 
 @pytest.fixture
-def topo_image(add_topo_image, climbable, image_file):
-    return add_topo_image(climbable=climbable, image=image_file)
+def topo_image(add_topo_image, location, image_file):
+    return add_topo_image(location=location, image=image_file)
 
 
 @pytest.fixture
-def topo_image_other(add_topo_image, climbable_other, image_file_other):
-    return add_topo_image(climbable=climbable_other, image=image_file_other)
+def topo_image_other(add_topo_image, location_other, image_file_other):
+    return add_topo_image(location=location_other, image=image_file_other)
 
 
 @pytest.fixture
-def problems_with_searchables(add_climbables, add_problems):
-    climbable_names = ["Svälthammaren", "Traverseblocket", "Campusblocket"]
-    climbables = add_climbables(n=len(climbable_names), names=climbable_names)
+def problems_with_searchables(add_locations, add_problems):
+    location_names = ["Svälthammaren", "Traverseblocket", "Campusblocket"]
+    locations = add_locations(n=len(location_names), names=location_names)
 
     problem_names = [
         "Watchtower",
@@ -49,45 +49,45 @@ def problems_with_searchables(add_climbables, add_problems):
         "Mad rock",
         "Start lower with a knee",
     ]
-    problem_climbables = [
-        climbables[0],
-        climbables[0],
-        climbables[0],
-        climbables[1],
-        climbables[1],
-        climbables[2],
+    problem_locations = [
+        locations[0],
+        locations[0],
+        locations[0],
+        locations[1],
+        locations[1],
+        locations[2],
     ]
     problems = add_problems(
         n=len(problem_names),
-        climbables=problem_climbables,
+        locations=problem_locations,
         names=problem_names,
         descriptions=descriptions,
     )
-    return problems, climbables
+    return problems, locations
 
 
 @pytest.fixture
-def problems_in_a_grid(create_location, add_climbable, add_problem):
+def problems_in_a_grid(create_position, add_location, add_problem):
     # One degree of latitude covers about 111 kilometers.
     # One degree of longitude, covers about 111 kilometers at the equator but
     # shrinks to 0 kilometers at the poles
 
     # Points on a 3x3 grid extending north from the equator
-    locations = [create_location(x, y) for x in [0, 1, 2] for y in [0, 1, 2]]
-    climbables = [
-        add_climbable(name=f"climbable {i+1}", location=location)
-        for i, location in enumerate(locations)
+    positions = [create_position(x, y) for x in [0, 1, 2] for y in [0, 1, 2]]
+    locations = [
+        add_location(name=f"location {i+1}", position=position)
+        for i, position in enumerate(positions)
     ]
     problems = [
-        add_problem(name=f"problem {i+1}", climbable=climbable)
-        for i, climbable in enumerate(climbables)
+        add_problem(name=f"problem {i+1}", location=location)
+        for i, location in enumerate(locations)
     ]
 
 
 @pytest.fixture
-def problems_with_rating(add_ascent, add_climbables, add_problems, add_users):
-    climbables = add_climbables(5)
-    problems = add_problems(5, climbables)
+def problems_with_rating(add_ascent, add_locations, add_problems, add_users):
+    locations = add_locations(5)
+    problems = add_problems(5, locations)
     users = add_users(5)
 
     # Let problem 1 have no rated ascents, rating = None
@@ -114,9 +114,9 @@ def problems_with_rating(add_ascent, add_climbables, add_problems, add_users):
 
 
 @pytest.fixture
-def problems_with_ascents(add_ascent, add_climbables, add_problems, add_users):
-    climbables = add_climbables(5)
-    problems = add_problems(5, climbables)
+def problems_with_ascents(add_ascent, add_locations, add_problems, add_users):
+    locations = add_locations(5)
+    problems = add_problems(5, locations)
     users = add_users(5)
 
     # Let problem 1 have no ascents

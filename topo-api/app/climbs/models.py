@@ -3,7 +3,7 @@ from django.contrib.gis.db import models
 from climbs.query_sets import ProblemQuerySet
 
 
-class Climbable(models.Model):
+class Location(models.Model):
     TYPE_CHOICES = [
         ("BL", "block"),
         ("WA", "wall"),
@@ -11,14 +11,14 @@ class Climbable(models.Model):
 
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=2, choices=TYPE_CHOICES, default="BL")
-    location = models.PointField()
+    position = models.PointField()
 
     def __str__(self):
         return self.name
 
 
 class Problem(models.Model):
-    climbable = models.ForeignKey(Climbable, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
     grade = models.CharField(max_length=4)
@@ -38,7 +38,7 @@ class Tag(models.Model):
 
 
 class TopoImage(models.Model):
-    climbable = models.ForeignKey(Climbable, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
     image = models.ImageField(upload_to=f"topo_images/")
 
     def save(self, *args, **kwargs):
@@ -51,4 +51,4 @@ class TopoImage(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Topo image for {self.climbable.name} - {self.image.name}"
+        return f"Topo image for {self.location.name} - {self.image.name}"

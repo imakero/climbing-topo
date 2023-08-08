@@ -20,7 +20,7 @@ class ProblemsView(generics.ListCreateAPIView):
 
         return (
             Problem.objects.prefetch_related("tags")
-            .select_related("climbable")
+            .select_related("location")
             .with_annotations("ascents", "rating")
             .with_dist_km(lon, lat)
         )
@@ -36,7 +36,7 @@ class ProblemView(generics.RetrieveUpdateDestroyAPIView):
 
         return (
             Problem.objects.prefetch_related("tags")
-            .select_related("climbable")
+            .select_related("location")
             .with_annotations("ascents", "rating")
             .with_dist_km(lon, lat)
         )

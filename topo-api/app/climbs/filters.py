@@ -20,8 +20,8 @@ class ProblemFilter(filters.FilterSet):
         field_name="description", lookup_expr="icontains"
     )
     tags = CsvFilter(field_name="tags__name", lookup_expr="lowercase__in")
-    climbable = filters.CharFilter(
-        field_name="climbable__name", lookup_expr="icontains"
+    location = filters.CharFilter(
+        field_name="location__name", lookup_expr="icontains"
     )
     dist_km = filters.NumberFilter(method="filter_distance_from_point")
 
@@ -36,7 +36,7 @@ class ProblemFilter(filters.FilterSet):
             "grade",
             "name",
             "tags",
-            "climbable",
+            "location",
             "dist_km",
             "min_ascents",
             "max_ascents",
@@ -54,7 +54,7 @@ class ProblemFilter(filters.FilterSet):
         point = fromstr(f"SRID=4326;POINT ({lon} {lat})")
 
         return queryset.annotate(
-            dist_km=Distance("climbable__location", point) / 1000
+            dist_km=Distance("location__position", point) / 1000
         ).filter(dist_km__lte=value)
 
     def filter_min_ascents(self, queryset, name, value):

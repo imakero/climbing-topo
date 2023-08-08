@@ -5,20 +5,20 @@ from django.test import override_settings
 from climbs.models import TopoImage
 
 
-def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
+def test_add_topo_image(db, client, location, image_file, tmp_media_folder):
     assert TopoImage.objects.count() == 0
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.post(
             reverse("topos"),
-            data={"climbable": climbable.id, "image": image_file},
+            data={"location": location.id, "image": image_file},
             format="multipart",
         )
 
     assert response.status_code == 201
 
     assert TopoImage.objects.count() == 1
-    assert response.data["climbable"] == climbable.id
+    assert response.data["location"] == location.id
     assert response.data["image"].endswith(image_file.name)
 
     image_path = tmp_media_folder / "topo_images" / image_file.name
@@ -26,14 +26,14 @@ def test_add_topo_image(db, client, climbable, image_file, tmp_media_folder):
 
 
 def test_add_topo_image_fails_for_txt_file(
-    db, client, climbable, text_file, tmp_media_folder
+    db, client, location, text_file, tmp_media_folder
 ):
     assert TopoImage.objects.count() == 0
 
     with override_settings(MEDIA_ROOT=tmp_media_folder):
         response = client.post(
             reverse("topos"),
-            {"climbable": climbable.id, "image": text_file},
+            {"location": location.id, "image": text_file},
             format="multipart",
         )
 
@@ -50,11 +50,11 @@ def test_list_topo_images(db, client, topo_image, topo_image_other):
 
     first_image, second_image = response.data
     assert first_image["id"] == topo_image.id
-    assert first_image["climbable"] == topo_image.climbable.id
+    assert first_image["location"] == topo_image.location.id
     assert first_image["image"].endswith(topo_image.image.name)
 
     assert second_image["id"] == topo_image_other.id
-    assert second_image["climbable"] == topo_image_other.climbable.id
+    assert second_image["location"] == topo_image_other.location.id
     assert second_image["image"].endswith(topo_image_other.image.name)
 
 
@@ -63,22 +63,22 @@ def test_get_topo_image(db, client, topo_image):
 
     assert response.status_code == 200
     assert response.data["id"] == topo_image.id
-    assert response.data["climbable"] == topo_image.climbable.id
+    assert response.data["location"] == topo_image.location.id
     assert response.data["image"].endswith(topo_image.image.name)
 
 
-def test_update_climbable_for_topo_image(
-    db, client, topo_image, climbable_other
+def test_update_location_for_topo_image(
+    db, client, topo_image, location_other
 ):
     response = client.patch(
         reverse("topo", args=[topo_image.id]),
-        {"climbable": climbable_other.id},
+        {"location": location_other.id},
         format="multipart",
     )
 
     assert response.status_code == 200
     assert response.data["id"] == topo_image.id
-    assert response.data["climbable"] == climbable_other.id
+    assert response.data["location"] == location_other.id
     assert response.data["image"].endswith(topo_image.image.name)
 
 
@@ -98,7 +98,7 @@ def test_update_image_for_topo_image(
 
         assert response.status_code == 200
         assert response.data["id"] == topo_image.id
-        assert response.data["climbable"] == topo_image.climbable.id
+        assert response.data["location"] == topo_image.location.id
         assert response.data["image"].endswith(image_file_other.name)
 
         new_image = TopoImage.objects.get(pk=topo_image.id).image
