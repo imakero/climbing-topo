@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext } from "react";
-import { UserContext } from "../context/UserProvider";
+import { UserContext } from "../app/context/UserProvider";
 import Link from "next/link";
 
 const NavUser = () => {

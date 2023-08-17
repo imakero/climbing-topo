@@ -1,18 +1,12 @@
 "use client";
 
-import { type Output, object, string, minLength } from "valibot";
+import { type Output } from "valibot";
 import { useForm } from "react-hook-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useContext } from "react";
 import { UserContext } from "../context/UserProvider";
 import { useRouter } from "next/navigation";
-
-export const LoginSchema = object({
-  username: string("username is required", [
-    minLength(3, "Needs to be at least 3 characters"),
-  ]),
-  password: string("password is required"),
-});
+import { LoginSchema } from "./LoginSchema";
 
 type LoginData = Output<typeof LoginSchema>;
 

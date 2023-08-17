@@ -1,8 +1,23 @@
+import Image from "next/image";
+import backgroundImage from "../../public/background.jpg";
+
 export default function Home() {
   return (
-    <main className="flex flex-col items-center p-24">
-      <h2 className={`mb-3 text-2xl font-semibold`}>Message from backend</h2>
-      <p className="m-0 max-w-[30ch] text-sm opacity-50">Test</p>
-    </main>
+    <div className="relative flex-grow">
+      <div className="absolute -z-10 h-full">
+        <Image
+          src={backgroundImage}
+          alt="Climber on Folkefesten in Lofoten"
+          className="object-cover"
+          priority
+        />
+      </div>
+      <div className="ml-8 mt-8 hidden max-w-sm rounded-md bg-teal-500 px-8 py-4 opacity-90 shadow-md lg:block">
+        <h1 className="text-6xl text-white">Topo</h1>
+        <h2 className="mt-4 text-2xl text-teal-200">
+          - Find problems with ease
+        </h2>
+      </div>
+    </div>
   );
 }
