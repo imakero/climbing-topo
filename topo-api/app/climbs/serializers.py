@@ -29,15 +29,18 @@ class ProblemSerializer(serializers.ModelSerializer):
         read_only_fields = ["tags", "dist_km", "ascents", "rating"]
 
 
-class LocationSerializer(serializers.ModelSerializer):
-    position = GpsPinField()
-
-    class Meta:
-        model = Location
-        fields = ["id", "name", "type", "position"]
-
-
 class LocationImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationImage
         fields = ["id", "location", "image"]
+
+
+class LocationSerializer(serializers.ModelSerializer):
+    position = GpsPinField()
+    images = LocationImageSerializer(
+        many=True, read_only=True, source="locationimage_set"
+    )
+
+    class Meta:
+        model = Location
+        fields = ["id", "name", "type", "position", "images"]

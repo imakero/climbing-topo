@@ -13,9 +13,19 @@ def compare_locations(response_location, location):
     assert position["lon"] == x
     assert position["lat"] == y
     assert position["google_maps_string"] == f"{y}, {x}"
+    assert (
+        len(response_location["images"]) == location.locationimage_set.count()
+    )
+
+    assert (
+        response_location["images"][0]["id"]
+        == location.locationimage_set.first().id
+    )
 
 
-def test_get_locations(db, client, location, location_other):
+def test_get_locations(
+    db, client, location, location_other, location_image, location_image_other
+):
     assert Location.objects.count() == 2
 
     response = client.get(reverse("locations"))
@@ -57,7 +67,7 @@ def test_create_location(db, client, moderator_user):
     assert position.y == 9.87654321
 
 
-def test_get_location(db, client, location, location_other):
+def test_get_location(db, client, location, location_other, location_image):
     response = client.get(reverse("location", args=[location.id]))
 
     assert response.status_code == 200
