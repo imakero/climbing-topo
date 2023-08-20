@@ -32,7 +32,7 @@ class ProblemSerializer(serializers.ModelSerializer):
 class LocationImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationImage
-        fields = ["id", "location", "image"]
+        fields = ["id", "location", "image", "image_width", "image_height"]
 
 
 class LocationSerializer(serializers.ModelSerializer):
