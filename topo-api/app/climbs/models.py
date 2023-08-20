@@ -39,7 +39,13 @@ class Tag(models.Model):
 
 class LocationImage(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=f"location_images/")
+    image = models.ImageField(
+        upload_to=f"location_images/",
+        width_field="image_width",
+        height_field="image_height",
+    )
+    image_width = models.IntegerField()
+    image_height = models.IntegerField()
 
     def save(self, *args, **kwargs):
         # Remove old Location image from disk if it's being updated
