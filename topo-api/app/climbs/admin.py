@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.gis.admin import GISModelAdmin
 
-from .models import Location, Problem, Tag
+from .models import Location, LocationImage, Problem, Tag
 
 
 @admin.register(Location)
@@ -18,9 +18,15 @@ class ProblemAdmin(admin.ModelAdmin):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    readonly_fields = ("id",)
     list_display = (
         "id",
         "name",
     )
     search_fields = ("name",)
+
+
+@admin.register(LocationImage)
+class LocationImageAdmin(admin.ModelAdmin):
+    list_display = ("id", "location", "image", "image_width", "image_height")
+    readonly_fields = ("image_width", "image_height")
+    search_fields = ("location__name",)
