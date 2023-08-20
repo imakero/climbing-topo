@@ -22,6 +22,14 @@ type TopoLocation = {
   name: string;
   type: string;
   position: Position;
+  images: WithId<LocationImage>[];
+};
+
+type LocationImage = {
+  location: number;
+  image: string;
+  imageWidth: number;
+  imageHeight: number;
 };
 
 type Position = {
