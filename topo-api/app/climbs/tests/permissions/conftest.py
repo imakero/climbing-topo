@@ -11,3 +11,15 @@ def location_payload():
             "lat": 9.87654321,
         },
     }
+
+
+@pytest.fixture
+def line_payload(problem, location_image):
+    return {
+        "location_image": location_image.id,
+        "problem": problem.id,
+        "points": {
+            "type": "LineString",
+            "coordinates": [[1, 2], [3, 4]],
+        },
+    }
