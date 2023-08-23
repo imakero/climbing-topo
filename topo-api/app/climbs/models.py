@@ -58,3 +58,11 @@ class LocationImage(models.Model):
 
     def __str__(self):
         return f"Location image for {self.location.name} - {self.image.name}"
+
+
+class Line(models.Model):
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    location_image = models.ForeignKey(
+        LocationImage, on_delete=models.CASCADE, related_name="lines"
+    )
+    points = models.LineStringField()
