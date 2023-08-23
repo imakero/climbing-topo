@@ -1,5 +1,7 @@
 from django.urls import path
 from climbs.views import (
+    LinesView,
+    LineView,
     LocationImagesView,
     LocationImageView,
     LocationView,
@@ -22,5 +24,15 @@ urlpatterns = [
         "location-images/<int:pk>/",
         LocationImageView.as_view(),
         name="location-image",
+    ),
+    path(
+        "lines/",
+        LinesView.as_view(),
+        name="lines",
+    ),
+    path(
+        "lines/<int:pk>/",
+        LineView.as_view(),
+        name="line",
     ),
 ]

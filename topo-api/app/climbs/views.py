@@ -2,9 +2,10 @@ from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from climbs.filters import ProblemFilter
-from climbs.models import Problem, Location, LocationImage
+from climbs.models import Problem, Location, LocationImage, Line
 from climbs.serializers import (
     ProblemSerializer,
+    LineSerializer,
     LocationImageSerializer,
     LocationSerializer,
 )
@@ -71,3 +72,15 @@ class LocationImageView(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         instance.image.delete(save=False)
         return super().perform_destroy(request, *args, **kwargs)
+
+
+class LinesView(generics.ListCreateAPIView):
+    serializer_class = LineSerializer
+    queryset = Line.objects.all()
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class LineView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LineSerializer
+    queryset = Line.objects.all()
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
