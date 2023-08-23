@@ -26,10 +26,19 @@ class TagsField(serializers.PrimaryKeyRelatedField):
 
 
 class LocationField(serializers.Field):
-    def to_representation(self, value):
-        from climbs.serializers import LocationSerializer
+    def __init__(self, include_nested=True, **kwargs):
+        self.include_nested = include_nested
+        super().__init__(**kwargs)
 
-        return LocationSerializer(value).data
+    def to_representation(self, value):
+        if self.include_nested:
+            from climbs.serializers import LocationSerializer
+
+            return LocationSerializer(value).data
+        else:
+            from climbs.serializers import LocationFlatSerializer
+
+            return LocationFlatSerializer(value).data
 
     def to_internal_value(self, data):
         return Location.objects.get(pk=data)

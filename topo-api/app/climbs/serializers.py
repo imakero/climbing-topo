@@ -30,9 +30,12 @@ class ProblemSerializer(serializers.ModelSerializer):
 
 
 class LocationImageSerializer(serializers.ModelSerializer):
+    location = LocationField(include_nested=False)
+
     class Meta:
         model = LocationImage
         fields = ["id", "location", "image", "image_width", "image_height"]
+        read_only_fields = ["image_width", "image_height"]
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -44,3 +47,10 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ["id", "name", "type", "position", "images"]
+
+
+class LocationFlatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = ["id", "name", "type"]
+
