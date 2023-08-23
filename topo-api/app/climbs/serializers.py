@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from climbs.serializer_fields import LocationField
 
-from climbs.models import Problem, Location, LocationImage, Tag
+from climbs.models import Problem, Location, LocationImage, Tag, Line
 from climbs.serializer_fields import TagsField, GpsPinField
 
 
@@ -54,3 +54,15 @@ class LocationFlatSerializer(serializers.ModelSerializer):
         model = Location
         fields = ["id", "name", "type"]
 
+
+class LineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Line
+        fields = ["id", "location_image", "problem", "points"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        request = self.context.get("request", None)
+        if request and request.method in ["PATCH", "PUT"]:
+            self.fields["location_image"].read_only = True
