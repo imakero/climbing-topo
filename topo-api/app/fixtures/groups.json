@@ -26,6 +26,26 @@
         "ascent"
       ],
       [
+        "add_line",
+        "climbs",
+        "line"
+      ],
+      [
+        "change_line",
+        "climbs",
+        "line"
+      ],
+      [
+        "delete_line",
+        "climbs",
+        "line"
+      ],
+      [
+        "view_line",
+        "climbs",
+        "line"
+      ],
+      [
         "add_location",
         "climbs",
         "location"
@@ -118,6 +138,11 @@
         "view_ascent",
         "activities",
         "ascent"
+      ],
+      [
+        "view_line",
+        "climbs",
+        "line"
       ],
       [
         "view_location",
