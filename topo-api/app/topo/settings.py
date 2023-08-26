@@ -197,6 +197,7 @@ REST_AUTH = {
     "JWT_AUTH_COOKIE": "jwt",
     "JWT_AUTH_REFRESH_COOKIE": "jwt_refresh",
     "JWT_AUTH_HTTPONLY": False,
+    "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
 }
 
 SIMPLE_JWT = {
