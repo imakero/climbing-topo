@@ -26,7 +26,7 @@ type TopoLocation = {
 };
 
 type LocationImage = {
-  location: number;
+  location: Omit<TopoLocation, "images">;
   image: string;
   imageWidth: number;
   imageHeight: number;
