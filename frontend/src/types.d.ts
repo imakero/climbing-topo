@@ -14,6 +14,11 @@ type Group = {
   name: string;
 };
 
+type Point = {
+  x: number;
+  y: number;
+};
+
 type Problem = {
   name: string;
   description: string;
