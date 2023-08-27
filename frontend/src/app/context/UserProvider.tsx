@@ -1,8 +1,10 @@
+import { getUser, logout } from "@/library/auth";
 import {
   useState,
   createContext,
   type Dispatch,
   type SetStateAction,
+  useEffect,
 } from "react";
 
 type UserContextType = {
@@ -21,6 +23,18 @@ export default function UserProvider({
   children: React.ReactNode;
 }) {
   const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    (async () => {
+      try {
+        const user = await getUser();
+        setUser(user);
+      } catch (e) {
+        if (typeof e === "string") {
+          await logout();
+        }
+      }
+    })();
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

@@ -23,3 +23,13 @@ export const logout = async () => {
   }
   return await response.json();
 };
+
+export const getUser = async () => {
+  const response = await fetch("http://localhost:8009/api/v1/auth/user/", {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw response.statusText;
+  }
+  return await response.json();
+};
