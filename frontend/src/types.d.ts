@@ -6,6 +6,12 @@ type User = {
   email: string;
   firstName: string;
   lastName: string;
+  isSuperuser: boolean;
+  groups: Group[];
+};
+
+type Group = {
+  name: string;
 };
 
 type Problem = {
