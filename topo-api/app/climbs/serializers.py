@@ -49,10 +49,19 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "type", "position", "images"]
 
 
-class LocationFlatSerializer(serializers.ModelSerializer):
+class LocationImageLocationSerializer(serializers.ModelSerializer):
+    class ProblemSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Problem
+            fields = ["id", "name", "grade"]
+
+    problems = ProblemSerializer(
+        many=True, read_only=True, source="problem_set"
+    )
+
     class Meta:
         model = Location
-        fields = ["id", "name", "type"]
+        fields = ["id", "name", "type", "problems"]
 
 
 class LineSerializer(serializers.ModelSerializer):
