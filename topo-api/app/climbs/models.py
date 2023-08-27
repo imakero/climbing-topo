@@ -66,3 +66,11 @@ class Line(models.Model):
         LocationImage, on_delete=models.CASCADE, related_name="lines"
     )
     points = models.LineStringField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["problem", "location_image"],
+                name="problem and location_image must be unique together",
+            )
+        ]
