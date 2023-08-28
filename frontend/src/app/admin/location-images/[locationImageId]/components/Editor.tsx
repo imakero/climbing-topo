@@ -13,8 +13,8 @@ type EditorProps = {
 const getProblemsNotDrawn = (locationImage: LocationImage) => {
   const lines = locationImage.lines;
   const problems = locationImage.location.problems;
-  const problemsDrawn = lines.map((line) => line.problem.id);
-  return problems.filter((problem) => !problemsDrawn.includes(problem.id));
+  const problemsDrawnIds = lines.map((line) => line.problem.id);
+  return problems.filter((problem) => !problemsDrawnIds.includes(problem.id));
 };
 
 const Editor = ({ locationImage }: EditorProps) => {
@@ -22,6 +22,7 @@ const Editor = ({ locationImage }: EditorProps) => {
   const [editing, setEditing] = useState<boolean>(false);
   const width = locationImage.imageWidth;
   const height = locationImage.imageHeight;
+  const problemsDrawn = locationImage.lines.map((line) => line.problem);
   const problemsNotDrawn = getProblemsNotDrawn(locationImage);
 
   const startEditing = () => {
@@ -59,7 +60,7 @@ const Editor = ({ locationImage }: EditorProps) => {
   };
 
   return (
-    <div className="block">
+    <div className="flex flex-col">
       <div>
         <div className="relative inline-block">
           <Image
@@ -76,6 +77,13 @@ const Editor = ({ locationImage }: EditorProps) => {
           />
         </div>
       </div>
+      <ul>
+        {problemsDrawn.map((problem, index) => (
+          <li key={problem.id}>
+            {index + 1}. {problem.name} ({problem.grade})
+          </li>
+        ))}
+      </ul>
       {editing ? (
         <NewLineForm
           onSubmit={saveLine}
