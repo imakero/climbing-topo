@@ -4,46 +4,35 @@ import { Fragment } from "react";
 type LineProps = {
   points: Point[];
   editing?: boolean;
+  index?: number;
 };
 
-const Line = ({ points, editing = false }: LineProps) => {
+const Line = ({ points, editing = false, index = 0 }: LineProps) => {
+  if (points.length === 0) return null;
+  const { x: lineStartX, y: lineStartY } = points[0];
+
   return (
-    <g>
-      <path
-        className="stroke-teal-200"
-        d={calculateLinePath(points)}
-        strokeWidth="3px"
-        fill="none"
-      />
+    <g className="fill-yellow-500 stroke-teal-200 stroke-2 hover:stroke-pink-500">
+      <path d={calculateLinePath(points)} strokeWidth="3px" fill="none" />
+      {index !== 0 && (
+        <>
+          <circle cx={lineStartX} cy={lineStartY} r="12" />
+          <text
+            x={lineStartX}
+            y={lineStartY}
+            textAnchor="middle"
+            dominantBaseline="middle"
+            className="fill-teal-200 font-normal "
+          >
+            {index}
+          </text>
+        </>
+      )}
       {editing
         ? points.map((point, index) => (
             <Fragment key={`number-${index}`}>
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="7"
-                className="fill-teal-200"
-              />
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="5"
-                className="fill-yellow-500"
-              />
-              <rect
-                x={point.x + 5}
-                y={point.y - 25}
-                width="20"
-                height="20"
-                className="fill-teal-200"
-              />
-              <rect
-                x={point.x + 7}
-                y={point.y - 23}
-                width="16"
-                height="16"
-                className="fill-yellow-500"
-              />
+              <circle cx={point.x} cy={point.y} r="7" />
+              <rect x={point.x + 5} y={point.y - 25} width="20" height="20" />
               <text
                 x={point.x + 15}
                 y={point.y - 14}

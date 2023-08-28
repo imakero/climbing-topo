@@ -39,7 +39,7 @@ const SvgOverlay = ({
       }}
     >
       {editing && <Line points={points} editing={true} />}
-      {lines.map((line) => (
+      {lines.map((line, index) => (
         <Line
           key={line.id}
           points={getAbsoluteCoordinates(
@@ -48,6 +48,7 @@ const SvgOverlay = ({
             overlayHeight,
           )}
           editing={false}
+          index={index + 1}
         />
       ))}
     </svg>
