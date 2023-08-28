@@ -65,9 +65,18 @@ class LocationSerializer(serializers.ModelSerializer):
         many=True, read_only=True, source="locationimage_set"
     )
 
+    class ProblemSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Problem
+            fields = ["id", "name", "grade"]
+
+    problems = ProblemSerializer(
+        many=True, read_only=True, source="problem_set"
+    )
+
     class Meta:
         model = Location
-        fields = ["id", "name", "type", "position", "images"]
+        fields = ["id", "name", "type", "position", "images", "problems"]
 
 
 class LocationImageLocationSerializer(serializers.ModelSerializer):
