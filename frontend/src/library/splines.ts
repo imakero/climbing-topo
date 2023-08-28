@@ -66,3 +66,22 @@ const getControlPoints = (points: Point[], t = 0.5) => {
 
   return controlPoints;
 };
+
+export const getAbsolutePoints = (
+  relativePoints: Point[],
+  width: number,
+  height: number,
+) =>
+  relativePoints.map((point) => ({
+    x: point.x * width,
+    y: point.y * height,
+  }));
+
+export const coordinatesToPoints = (points: Line["points"]) =>
+  points.coordinates.map(([x, y]) => ({ x, y }));
+
+export const getAbsoluteCoordinates = (
+  points: Line["points"],
+  width: number,
+  height: number,
+) => getAbsolutePoints(coordinatesToPoints(points), width, height);
