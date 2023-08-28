@@ -34,6 +34,7 @@ type TopoLocation = {
   type: string;
   position: Position;
   images: WithId<LocationImage>[];
+  problems: LocationImageProblem[];
 };
 
 type Line = {
