@@ -22,10 +22,15 @@ const NewProblemForm = ({ onSubmit }: NewProblemFormProps) => {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <label htmlFor="name">Name</label>
       <input {...register("name")} />
+      {errors.name && <p className="text-red-500">{errors.name?.message}</p>}
       <label htmlFor="grade">Grade</label>
       <input {...register("grade")} />
+      {errors.grade && <p className="text-red-500">{errors.grade?.message}</p>}
       <label htmlFor="description">Description</label>
       <textarea {...register("description")} />
+      {errors.description && (
+        <p className="text-red-500">{errors.description?.message}</p>
+      )}
       <Button type="submit">Add new problem!</Button>
     </form>
   );
