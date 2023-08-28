@@ -1,4 +1,4 @@
-import Location from "./components/Location";
+import LocationPage from "./components/LocationPage";
 
 export async function generateStaticParams() {
   const locations = await fetch("http://localhost:8009/api/v1/locations/").then(
@@ -28,5 +28,5 @@ export default async function AdminLocation({
 }) {
   const location = await getLocation(params.locationId);
 
-  return <Location location={location} />;
+  return <LocationPage location={location} />;
 }
