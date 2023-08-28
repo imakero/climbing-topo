@@ -38,8 +38,6 @@ const Login = () => {
     }
   };
 
-  console.log(user);
-
   return (
     <form
       className="mx-auto flex max-w-sm flex-col"
