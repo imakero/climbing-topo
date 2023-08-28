@@ -1,4 +1,4 @@
-import LocationImage from "./components/LocationImage";
+import LocationImagePage from "./components/LocationImagePage";
 
 export async function generateStaticParams() {
   const locationImages = await fetch(
@@ -30,7 +30,7 @@ export default async function AdminLocationImage({
 
   return (
     <>
-      <LocationImage locationImage={locationImage} />
+      <LocationImagePage locationImage={locationImage} />
     </>
   );
 }

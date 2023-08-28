@@ -1,10 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NewLineForm, { NewLineData } from "./NewLineForm";
 import Button from "@/components/Button";
-import SvgOverlay from "./Overlay";
+import SvgOverlay from "../../../../../components/SvgOverlay";
+import SvgLine from "../../../../../components/SvgLine";
+import { getAbsoluteCoordinates, getAbsolutePoints } from "@/library/splines";
+import useWindowSize from "../hooks/useWindowSize";
 
 type EditorProps = {
   locationImage: WithId<LocationImage>;
@@ -20,10 +23,22 @@ const getProblemsNotDrawn = (locationImage: LocationImage) => {
 const Editor = ({ locationImage }: EditorProps) => {
   const [relativePoints, setRelativePoints] = useState<Point[]>([]);
   const [editing, setEditing] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const _ = useWindowSize();
+
+  const overlayRef = useRef<SVGSVGElement>(null);
+
   const width = locationImage.imageWidth;
   const height = locationImage.imageHeight;
   const problemsDrawn = locationImage.lines.map((line) => line.problem);
   const problemsNotDrawn = getProblemsNotDrawn(locationImage);
+
+  const overlayWidth = overlayRef.current?.width.baseVal.value || 1;
+  const overlayHeight = overlayRef.current?.height.baseVal.value || 1;
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   const startEditing = () => {
     setEditing(true);
@@ -70,11 +85,42 @@ const Editor = ({ locationImage }: EditorProps) => {
             height={height}
           />
           <SvgOverlay
-            editing={editing}
-            relativePoints={relativePoints}
-            setRelativePoints={setRelativePoints}
-            lines={locationImage.lines}
-          />
+            ref={overlayRef}
+            onClick={(e) => {
+              if (!editing) return;
+              const rect = (
+                e.target as HTMLImageElement
+              ).getBoundingClientRect();
+              const x = (e.clientX - rect.left) / rect.width;
+              const y = (e.clientY - rect.top) / rect.height;
+              setRelativePoints([...relativePoints, { x, y }]);
+            }}
+          >
+            <g className={`${loading ? "hidden" : ""}`}>
+              {editing && (
+                <SvgLine
+                  points={getAbsolutePoints(
+                    relativePoints,
+                    overlayWidth,
+                    overlayHeight,
+                  )}
+                  editing={true}
+                />
+              )}
+              {locationImage.lines.map((line, index) => (
+                <SvgLine
+                  key={line.id}
+                  points={getAbsoluteCoordinates(
+                    line.points,
+                    overlayWidth,
+                    overlayHeight,
+                  )}
+                  editing={false}
+                  index={index + 1}
+                />
+              ))}
+            </g>
+          </SvgOverlay>
         </div>
       </div>
       <ul>

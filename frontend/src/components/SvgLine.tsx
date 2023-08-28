@@ -7,7 +7,7 @@ type LineProps = {
   index?: number;
 };
 
-const Line = ({ points, editing = false, index = 0 }: LineProps) => {
+const SvgLine = ({ points, editing = false, index = 0 }: LineProps) => {
   if (points.length === 0) return null;
   const { x: lineStartX, y: lineStartY } = points[0];
 
@@ -49,4 +49,4 @@ const Line = ({ points, editing = false, index = 0 }: LineProps) => {
   );
 };
 
-export default Line;
+export default SvgLine;

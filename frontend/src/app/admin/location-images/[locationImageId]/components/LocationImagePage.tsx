@@ -1,10 +1,10 @@
 import Editor from "./Editor";
 
-type LocationImageProps = {
+type LocationImagePageProps = {
   locationImage: WithId<LocationImage>;
 };
 
-const LocationImage = ({ locationImage }: LocationImageProps) => {
+const LocationImagePage = ({ locationImage }: LocationImagePageProps) => {
   return (
     <>
       <h1 className="text-2xl">
@@ -15,4 +15,4 @@ const LocationImage = ({ locationImage }: LocationImageProps) => {
   );
 };
 
-export default LocationImage;
+export default LocationImagePage;
