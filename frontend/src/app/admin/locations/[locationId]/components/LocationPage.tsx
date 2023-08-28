@@ -5,6 +5,7 @@ import LinkButton from "@/components/LinkButton";
 import LocationImage from "@/components/LocationImage";
 import LocationImageProblems from "@/components/LocationImageProblems";
 import Link from "next/link";
+import NewProblemForm, { NewProblemData } from "./NewProblemForm";
 
 type LocationPageProps = {
   location: WithId<TopoLocation>;
@@ -16,6 +17,25 @@ const LocationPage = ({ location }: LocationPageProps) => {
       method: "DELETE",
       credentials: "include",
     });
+  };
+
+  const onSubmit = async (data: NewProblemData) => {
+    const response = await fetch(`http://localhost:8009/api/v1/problems/`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        ...data,
+        location: location.id,
+        tags: [],
+      }),
+    });
+    if (response.ok) {
+      const problem = await response.json();
+      console.log(problem);
+    }
   };
 
   return (
@@ -42,6 +62,8 @@ const LocationPage = ({ location }: LocationPageProps) => {
           </li>
         ))}
       </ol>
+      <h2 className="mt-4 text-xl">Add new problem</h2>
+      <NewProblemForm onSubmit={onSubmit} />
       <h2 className="mt-4 text-xl">Images</h2>
       <div>
         {location.images.map((locationImage) => (
