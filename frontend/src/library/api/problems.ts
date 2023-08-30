@@ -24,9 +24,11 @@ export const removeProblem = async (problemId: number) =>
   });
 
 export const getProblems = async () =>
-  fetch(`http://localhost:8009/api/v1/problems/`).then((res) => res.json());
+  fetch(`http://localhost:8009/api/v1/problems/`, {
+    cache: "no-cache",
+  }).then((res) => res.json());
 
 export const getProblem = async (problemId: number) =>
-  fetch(`http://localhost:8009/api/v1/problems/${problemId}/`).then((res) =>
-    res.json(),
-  );
+  fetch(`http://localhost:8009/api/v1/problems/${problemId}/`, {
+    cache: "no-cache",
+  }).then((res) => res.json());
