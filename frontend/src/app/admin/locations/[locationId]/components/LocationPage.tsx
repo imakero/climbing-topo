@@ -6,35 +6,42 @@ import LocationImage from "@/components/LocationImage";
 import LocationImageProblems from "@/components/LocationImageProblems";
 import Link from "next/link";
 import NewProblemForm, { NewProblemData } from "./NewProblemForm";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { removeProblem } from "@/library/api/problems";
 
 type LocationPageProps = {
   location: WithId<TopoLocation>;
 };
 
-const LocationPage = ({ location }: LocationPageProps) => {
-  const deleteProblem = async (problemId: number) => {
-    await fetch(`http://localhost:8009/api/v1/problems/${problemId}/`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-  };
+const LocationPage = ({ location: locationProp }: LocationPageProps) => {
+  const [location, setLocation] = useState(locationProp);
+  const router = useRouter();
 
-  const onSubmit = async (data: NewProblemData) => {
-    const response = await fetch(`http://localhost:8009/api/v1/problems/`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        ...data,
-        location: location.id,
-        tags: [],
-      }),
-    });
-    if (response.ok) {
-      const problem = await response.json();
-      console.log(problem);
+  useEffect(() => {
+    setLocation(locationProp);
+  }, [locationProp]);
+
+  const deleteProblem = async (problemId: number) => {
+    if (problemId < 0) {
+      return;
+    }
+    try {
+      setLocation((location) => {
+        return {
+          ...location,
+          problems: location.problems.filter((p) => p.id !== problemId),
+        };
+      });
+      const response = await removeProblem(problemId);
+      if (response.ok) {
+        router.refresh();
+      } else {
+        throw new Error("Failed to delete problem");
+      }
+    } catch (e) {
+      console.error(e);
+      setLocation(location);
     }
   };
 
@@ -63,7 +70,7 @@ const LocationPage = ({ location }: LocationPageProps) => {
         ))}
       </ol>
       <h2 className="mt-4 text-xl">Add new problem</h2>
-      <NewProblemForm onSubmit={onSubmit} />
+      <NewProblemForm location={location} setLocation={setLocation} />
       <h2 className="mt-4 text-xl">Images</h2>
       <div>
         {location.images.map((locationImage) => (
