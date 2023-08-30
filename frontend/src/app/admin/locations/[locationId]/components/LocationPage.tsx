@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { removeProblem } from "@/library/api/problems";
 import NewImageForm from "./NewImageForm";
 import { removeLocationImage } from "@/library/api/locationImages";
+import { removeLine } from "@/library/api/lines";
 
 type LocationPageProps = {
   location: WithId<TopoLocation>;
@@ -67,6 +68,29 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
     }
   };
 
+  const deleteLine = async (lineId: number) => {
+    try {
+      setLocation((location) => {
+        return {
+          ...location,
+          images: location.images.map((image) => ({
+            ...image,
+            lines: image.lines.filter((line) => line.id !== lineId),
+          })),
+        };
+      });
+      const response = await removeLine(lineId);
+      if (response.ok) {
+        router.refresh();
+      } else {
+        throw new Error("Failed to delete line");
+      }
+    } catch (e) {
+      console.error(e);
+      setLocation(location);
+    }
+  };
+
   return (
     <article>
       <h1 className="text-2xl">{location.name}</h1>
@@ -104,7 +128,10 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
               Delete
             </Button>
             <LocationImage locationImage={locationImage} />
-            <LocationImageProblems lines={locationImage.lines} />
+            <LocationImageProblems
+              lines={locationImage.lines}
+              onDelete={deleteLine}
+            />
           </div>
         ))}
       </div>

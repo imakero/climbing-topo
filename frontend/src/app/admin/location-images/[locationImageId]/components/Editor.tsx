@@ -4,10 +4,13 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import NewLineForm, { NewLineData } from "./NewLineForm";
 import Button from "@/components/Button";
-import SvgOverlay from "../../../../../components/SvgOverlay";
-import SvgLine from "../../../../../components/SvgLine";
+import SvgOverlay from "@/components/SvgOverlay";
+import SvgLine from "@/components/SvgLine";
 import { getAbsoluteCoordinates, getAbsolutePoints } from "@/library/splines";
 import useWindowSize from "../hooks/useWindowSize";
+import LocationImageProblems from "@/components/LocationImageProblems";
+import { addLine, removeLine } from "@/library/api/lines";
+import { useRouter } from "next/navigation";
 
 type EditorProps = {
   locationImage: WithId<LocationImage>;
@@ -20,7 +23,9 @@ const getProblemsNotDrawn = (locationImage: LocationImage) => {
   return problems.filter((problem) => !problemsDrawnIds.includes(problem.id));
 };
 
-const Editor = ({ locationImage }: EditorProps) => {
+const Editor = ({ locationImage: locationImageProp }: EditorProps) => {
+  const router = useRouter();
+  const [locationImage, setLocationImage] = useState(locationImageProp);
   const [relativePoints, setRelativePoints] = useState<Point[]>([]);
   const [editing, setEditing] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,7 +35,6 @@ const Editor = ({ locationImage }: EditorProps) => {
 
   const width = locationImage.imageWidth;
   const height = locationImage.imageHeight;
-  const problemsDrawn = locationImage.lines.map((line) => line.problem);
   const problemsNotDrawn = getProblemsNotDrawn(locationImage);
 
   const overlayWidth = overlayRef.current?.width.baseVal.value || 1;
@@ -40,29 +44,73 @@ const Editor = ({ locationImage }: EditorProps) => {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    setLocationImage(locationImageProp);
+  }, [locationImageProp]);
+
   const startEditing = () => {
     setEditing(true);
     setRelativePoints([]);
   };
 
   const saveLine = async (data: NewLineData) => {
-    const response = await fetch(`http://localhost:8009/api/v1/lines/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({
+    try {
+      setLocationImage((locationImage) => ({
+        ...locationImage,
+        lines: [
+          ...locationImage.lines,
+          {
+            id: -Math.random(),
+            problem: locationImage.location.problems.find(
+              (problem) => problem.id === parseInt(data.problem),
+            ) as LocationImageProblem,
+            points: {
+              type: "LineString",
+              coordinates: relativePoints.map((point) => [point.x, point.y]),
+            },
+          },
+        ],
+      }));
+      const response = await addLine({
         locationImage: locationImage.id,
         points: {
           type: "LineString",
           coordinates: relativePoints.map((point) => [point.x, point.y]),
         },
-        problem: data.problem,
-      }),
-    });
+        problem: parseInt(data.problem),
+      });
+      if (response.ok) {
+        router.refresh();
+      } else {
+        throw new Error("Failed to add line");
+      }
+    } catch (error) {
+      console.error(error);
+      setLocationImage(locationImage);
+    }
 
     setEditing(false);
+  };
+
+  const deleteLine = async (lineId: number) => {
+    if (lineId < 0) {
+      return;
+    }
+    try {
+      setLocationImage((locationImage) => ({
+        ...locationImage,
+        lines: locationImage.lines.filter((line) => line.id !== lineId),
+      }));
+      const response = await removeLine(lineId);
+      if (response.ok) {
+        router.refresh();
+      } else {
+        throw new Error("Failed to delete line");
+      }
+    } catch (error) {
+      console.error(error);
+      setLocationImage(locationImage);
+    }
   };
 
   const stopEditing = () => {
@@ -124,11 +172,10 @@ const Editor = ({ locationImage }: EditorProps) => {
         </div>
       </div>
       <ul>
-        {problemsDrawn.map((problem, index) => (
-          <li key={problem.id}>
-            {index + 1}. {problem.name} ({problem.grade})
-          </li>
-        ))}
+        <LocationImageProblems
+          lines={locationImage.lines}
+          onDelete={deleteLine}
+        />
       </ul>
       {editing ? (
         <NewLineForm
