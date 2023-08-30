@@ -22,3 +22,6 @@ export const removeProblem = async (problemId: number) =>
     method: "DELETE",
     credentials: "include",
   });
+
+export const getProblems = async () =>
+  fetch(`http://localhost:8009/api/v1/problems/`).then((res) => res.json());
