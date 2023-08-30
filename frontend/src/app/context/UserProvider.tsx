@@ -1,4 +1,4 @@
-import { getUser, logout } from "@/library/auth";
+import { getUser, logout } from "@/library/api/auth";
 import {
   useState,
   createContext,

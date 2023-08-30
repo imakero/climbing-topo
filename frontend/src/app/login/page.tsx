@@ -7,7 +7,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserProvider";
 import { useRouter } from "next/navigation";
 import { LoginSchema } from "./LoginSchema";
-import { login } from "../../library/auth";
+import { login } from "../../library/api/auth";
 
 type LoginData = Output<typeof LoginSchema>;
 
