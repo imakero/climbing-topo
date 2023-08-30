@@ -1,24 +1,15 @@
+import {
+  getLocationImage,
+  getLocationImages,
+} from "@/library/api/locationImages";
 import LocationImagePage from "./components/LocationImagePage";
 
 export async function generateStaticParams() {
-  const locationImages = await fetch(
-    "http://localhost:8009/api/v1/location-images/",
-  ).then((res) => res.json());
+  const locationImages = await getLocationImages();
 
-  return locationImages.map((locationImage: WithId<LocationImage>) => ({
+  return locationImages.map((locationImage) => ({
     locationImageId: locationImage.id.toString(),
   }));
-}
-
-async function getLocationImage(locationImageId: string) {
-  const locationImages = await fetch(
-    `http://localhost:8009/api/v1/location-images/${locationImageId}/`,
-    {
-      cache: "no-cache",
-    },
-  ).then((res) => res.json());
-
-  return locationImages;
 }
 
 export default async function AdminLocationImage({
@@ -26,7 +17,9 @@ export default async function AdminLocationImage({
 }: {
   params: { locationImageId: string };
 }) {
-  const locationImage = await getLocationImage(params.locationImageId);
+  const locationImage = await getLocationImage(
+    parseInt(params.locationImageId),
+  );
 
   return (
     <>

@@ -1,24 +1,12 @@
+import { getLocation, getLocations } from "@/library/api/locations";
 import LocationPage from "./components/LocationPage";
 
 export async function generateStaticParams() {
-  const locations = await fetch("http://localhost:8009/api/v1/locations/").then(
-    (res) => res.json(),
-  );
+  const locations = await getLocations();
 
-  return locations.map((location: WithId<Location>) => ({
+  return locations.map((location) => ({
     locationId: location.id.toString(),
   }));
-}
-
-async function getLocation(locationId: string) {
-  const location = await fetch(
-    `http://localhost:8009/api/v1/locations/${locationId}/`,
-    {
-      cache: "no-cache",
-    },
-  ).then((res) => res.json());
-
-  return location;
 }
 
 export default async function AdminLocation({
@@ -26,7 +14,7 @@ export default async function AdminLocation({
 }: {
   params: { locationId: string };
 }) {
-  const location = await getLocation(params.locationId);
+  const location = await getLocation(parseInt(params.locationId));
 
   return <LocationPage location={location} />;
 }

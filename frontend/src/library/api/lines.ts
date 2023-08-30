@@ -1,5 +1,5 @@
 export const removeLine = (id: number) =>
-  fetch(`http://localhost:8009/api/v1/lines/${id}`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/lines/${id}`, {
     method: "DELETE",
     credentials: "include",
   });
@@ -14,7 +14,7 @@ type LinePayload = {
 };
 
 export const addLine = (data: LinePayload) =>
-  fetch(`http://localhost:8009/api/v1/lines/`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/lines/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -1,12 +1,15 @@
 export const login = async (username: string, password: string) => {
-  const response = await fetch("http://localhost:8009/api/v1/auth/login/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/login/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({ username, password }),
     },
-    credentials: "include",
-    body: JSON.stringify({ username, password }),
-  });
+  );
   if (!response.ok) {
     throw response;
   }
@@ -14,10 +17,13 @@ export const login = async (username: string, password: string) => {
 };
 
 export const logout = async () => {
-  const response = await fetch("http://localhost:8009/api/v1/auth/logout/", {
-    method: "POST",
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/logout/`,
+    {
+      method: "POST",
+      credentials: "include",
+    },
+  );
   if (!response.ok) {
     throw response;
   }
@@ -25,9 +31,12 @@ export const logout = async () => {
 };
 
 export const getUser = async () => {
-  const response = await fetch("http://localhost:8009/api/v1/auth/user/", {
-    credentials: "include",
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/user/`,
+    {
+      credentials: "include",
+    },
+  );
   if (!response.ok) {
     throw response.statusText;
   }

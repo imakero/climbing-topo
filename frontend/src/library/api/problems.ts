@@ -7,7 +7,7 @@ type ProblemPayload = NewProblemData & {
 };
 
 export const addProblem = async (data: ProblemPayload) =>
-  fetch(`http://localhost:8009/api/v1/problems/`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/`, {
     method: "POST",
     credentials: "include",
     headers: {
@@ -19,18 +19,18 @@ export const addProblem = async (data: ProblemPayload) =>
   });
 
 export const removeProblem = async (problemId: number) =>
-  fetch(`http://localhost:8009/api/v1/problems/${problemId}/`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/${problemId}/`, {
     method: "DELETE",
     credentials: "include",
   });
 
 export const getProblems = async (): Promise<WithId<Problem>[]> =>
-  fetch(`http://localhost:8009/api/v1/problems/`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/`, {
     cache: "no-cache",
   }).then((res) => res.json());
 
 export const getProblem = async (problemId: number): Promise<WithId<Problem>> =>
-  fetch(`http://localhost:8009/api/v1/problems/${problemId}/`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/${problemId}/`, {
     cache: "no-cache",
   }).then((res) => res.json());
 
@@ -38,7 +38,7 @@ export const updateProblem = async (
   problemId: number,
   data: Partial<EditProblemData>,
 ) =>
-  fetch(`http://localhost:8009/api/v1/problems/${problemId}/`, {
+  fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/${problemId}/`, {
     method: "PATCH",
     credentials: "include",
     headers: {

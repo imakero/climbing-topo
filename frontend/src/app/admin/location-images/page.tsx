@@ -1,17 +1,7 @@
+import { getLocationImages } from "@/library/api/locationImages";
 import LocationImages from "./components/LocationImages";
 
 type AdminLocationsProps = {};
-
-async function getLocationImages() {
-  const locationImages = await fetch(
-    `http://localhost:8009/api/v1/location-images/`,
-    {
-      cache: "no-cache",
-    },
-  ).then((res) => res.json());
-
-  return locationImages;
-}
 
 export default async function AdminLocations({}: AdminLocationsProps) {
   const locationImages = await getLocationImages();
