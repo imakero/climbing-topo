@@ -9,6 +9,7 @@ import NewProblemForm, { NewProblemData } from "./NewProblemForm";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { removeProblem } from "@/library/api/problems";
+import NewImageForm from "./NewImageForm";
 
 type LocationPageProps = {
   location: WithId<TopoLocation>;
@@ -85,6 +86,8 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
           </div>
         ))}
       </div>
+      <h2 className="mt-4 text-xl">Add image</h2>
+      <NewImageForm location={location} />
     </article>
   );
 };
