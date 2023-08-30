@@ -1,10 +1,15 @@
 import { getLocations } from "@/library/api/locations";
-import Locations from "./components/Locations";
+import LocationsPage from "./components/Locations";
+import NewLocationForm from "./components/NewLocationForm";
 
 type AdminLocationsProps = {};
 
 export default async function AdminLocations({}: AdminLocationsProps) {
   const locations = await getLocations();
 
-  return <Locations locations={locations} />;
+  return (
+    <>
+      <LocationsPage locations={locations} />
+    </>
+  );
 }

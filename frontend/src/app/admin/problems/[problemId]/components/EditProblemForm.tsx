@@ -39,7 +39,7 @@ const EditProblemForm = ({ problem }: EditProblemFormProps) => {
         throw new Error("Problem could not be updated");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError("root", {
         type: "error",
         message: "Something went wrong. Problem could not be updated.",

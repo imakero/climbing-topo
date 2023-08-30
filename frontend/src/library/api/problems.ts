@@ -13,9 +13,7 @@ export const addProblem = async (data: ProblemPayload) =>
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      ...data,
-    }),
+    body: JSON.stringify(data),
   });
 
 export const removeProblem = async (problemId: number) =>

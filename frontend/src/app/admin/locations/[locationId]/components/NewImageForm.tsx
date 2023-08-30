@@ -31,8 +31,6 @@ const NewImageForm = ({ location }: NewImageFormProps) => {
     if (response.ok) {
       router.refresh();
     } else {
-      const json = await response.json();
-      console.log(json);
       setError("image", {
         type: "error",
         message: "Something went wrong while uploading the image.",

@@ -1,10 +1,40 @@
-import Link from "next/link";
+"use client";
 
-type LocationsProps = {
+import Button from "@/components/Button";
+import LinkButton from "@/components/LinkButton";
+import { removeLocation } from "@/library/api/locations";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import NewLocationForm from "./NewLocationForm";
+
+type LocationsPageProps = {
   locations: WithId<TopoLocation>[];
 };
 
-const Locations = ({ locations }: LocationsProps) => {
+const LocationsPage = ({ locations: locationsProp }: LocationsPageProps) => {
+  const [locations, setLocations] = useState(locationsProp);
+  const router = useRouter();
+
+  useEffect(() => {
+    setLocations(locationsProp);
+  }, [locationsProp]);
+
+  const deleteLocation = async (id: number) => {
+    setLocations(locations.filter((location) => location.id !== id));
+    try {
+      const response = await removeLocation(id);
+      if (response.ok) {
+        router.refresh();
+      } else {
+        throw new Error("Failed to delete location");
+      }
+    } catch (error) {
+      console.error(error);
+      setLocations(locations);
+    }
+  };
+
   return (
     <div>
       <h1 className="text-2xl">Locations Admin</h1>
@@ -16,19 +46,27 @@ const Locations = ({ locations }: LocationsProps) => {
                 {location.name}
               </Link>
               <div>
-                <Link href={`/admin/locations/${location.id}`} className="ml-4">
+                <LinkButton
+                  href={`/admin/locations/${location.id}`}
+                  className="ml-4"
+                >
                   Edit
-                </Link>
-                <Link href={`/admin/locations/${location.id}`} className="ml-4">
+                </LinkButton>
+                <Button
+                  onClick={(e) => deleteLocation(location.id)}
+                  className="ml-4"
+                >
                   Delete
-                </Link>
+                </Button>
               </div>
             </div>
           </li>
         ))}
       </ul>
+      <h2 className="text-2xl">Add location</h2>
+      <NewLocationForm locations={locations} setLocations={setLocations} />
     </div>
   );
 };
 
-export default Locations;
+export default LocationsPage;
