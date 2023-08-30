@@ -14,7 +14,7 @@ async function getLocationImage(locationImageId: string) {
   const locationImages = await fetch(
     `http://localhost:8009/api/v1/location-images/${locationImageId}/`,
     {
-      next: { revalidate: 1 },
+      cache: "no-cache",
     },
   ).then((res) => res.json());
 

@@ -14,7 +14,7 @@ async function getLocation(locationId: string) {
   const location = await fetch(
     `http://localhost:8009/api/v1/locations/${locationId}/`,
     {
-      next: { revalidate: 1 },
+      cache: "no-cache",
     },
   ).then((res) => res.json());
 

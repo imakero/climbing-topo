@@ -4,7 +4,7 @@ type AdminLocationsProps = {};
 
 async function getLocations() {
   const locations = await fetch(`http://localhost:8009/api/v1/locations/`, {
-    next: { revalidate: 60 },
+    cache: "no-cache",
   }).then((res) => res.json());
 
   return locations;

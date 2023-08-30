@@ -6,7 +6,7 @@ async function getLocationImages() {
   const locationImages = await fetch(
     `http://localhost:8009/api/v1/location-images/`,
     {
-      next: { revalidate: 60 },
+      cache: "no-cache",
     },
   ).then((res) => res.json());
 
