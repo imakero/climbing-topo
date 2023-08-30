@@ -1,3 +1,4 @@
+import LinkButton from "@/components/LinkButton";
 import Link from "next/link";
 
 type LocationImagesProps = {
@@ -8,24 +9,24 @@ const LocationImages = ({ locationImages }: LocationImagesProps) => {
   return (
     <ul>
       {locationImages.map((locationImage) => (
-        <li key={locationImage.id}>
+        <li key={locationImage.id} className="my-4 ">
           <div className="flex flex-row justify-between">
             <Link href={`/admin/location-images/${locationImage.id}`}>
               {locationImage.id}
             </Link>
             <div>
-              <Link
+              <LinkButton
                 href={`/admin/location-images/${locationImage.id}`}
                 className="ml-4"
               >
                 Edit
-              </Link>
-              <Link
+              </LinkButton>
+              <LinkButton
                 href={`/admin/location-images/${locationImage.id}`}
                 className="ml-4"
               >
                 Delete
-              </Link>
+              </LinkButton>
             </div>
           </div>
         </li>

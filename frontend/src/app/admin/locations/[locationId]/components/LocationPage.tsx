@@ -5,11 +5,12 @@ import LinkButton from "@/components/LinkButton";
 import LocationImage from "@/components/LocationImage";
 import LocationImageProblems from "@/components/LocationImageProblems";
 import Link from "next/link";
-import NewProblemForm, { NewProblemData } from "./NewProblemForm";
+import NewProblemForm from "./NewProblemForm";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { removeProblem } from "@/library/api/problems";
 import NewImageForm from "./NewImageForm";
+import { removeLocationImage } from "@/library/api/locationImages";
 
 type LocationPageProps = {
   location: WithId<TopoLocation>;
@@ -39,6 +40,26 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
         router.refresh();
       } else {
         throw new Error("Failed to delete problem");
+      }
+    } catch (e) {
+      console.error(e);
+      setLocation(location);
+    }
+  };
+
+  const deleteLocationImage = async (locationImageId: number) => {
+    try {
+      setLocation((location) => {
+        return {
+          ...location,
+          images: location.images.filter((i) => i.id !== locationImageId),
+        };
+      });
+      const response = await removeLocationImage(locationImageId);
+      if (response.ok) {
+        router.refresh();
+      } else {
+        throw new Error("Failed to delete location image");
       }
     } catch (e) {
       console.error(e);
@@ -79,6 +100,9 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
             <LinkButton href={`/admin/location-images/${locationImage.id}`}>
               Edit
             </LinkButton>
+            <Button onClick={() => deleteLocationImage(locationImage.id)}>
+              Delete
+            </Button>
             <LocationImage locationImage={locationImage} />
             <LocationImageProblems
               problems={locationImage.lines.map((line) => line.problem)}
