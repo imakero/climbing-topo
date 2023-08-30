@@ -104,9 +104,7 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
               Delete
             </Button>
             <LocationImage locationImage={locationImage} />
-            <LocationImageProblems
-              problems={locationImage.lines.map((line) => line.problem)}
-            />
+            <LocationImageProblems lines={locationImage.lines} />
           </div>
         ))}
       </div>
