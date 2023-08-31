@@ -18,4 +18,5 @@ export const SearchFormSchema = object({
   ]),
   name: string(),
   description: string(),
+  location: string(),
 });
