@@ -13,6 +13,10 @@ const NavUser = () => {
         <span>
           <span className="font-bold">{user?.username}</span>(
           <Link href="/logout">log out</Link>)
+          {(user?.isSuperuser ||
+            user?.groups.find((group) => group.name === "moderator")) && (
+            <Link href="/admin">Admin</Link>
+          )}
         </span>
       ) : (
         <Link href="/login" className="hover:text-white">

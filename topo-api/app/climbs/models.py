@@ -29,6 +29,9 @@ class Problem(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        ordering = ["id"]
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=100)
@@ -66,3 +69,11 @@ class Line(models.Model):
         LocationImage, on_delete=models.CASCADE, related_name="lines"
     )
     points = models.LineStringField()
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["problem", "location_image"],
+                name="problem and location_image must be unique together",
+            )
+        ]

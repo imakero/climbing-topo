@@ -6,6 +6,17 @@ type User = {
   email: string;
   firstName: string;
   lastName: string;
+  isSuperuser: boolean;
+  groups: Group[];
+};
+
+type Group = {
+  name: string;
+};
+
+type Point = {
+  x: number;
+  y: number;
 };
 
 type Problem = {
@@ -23,14 +34,32 @@ type TopoLocation = {
   type: string;
   position: Position;
   images: WithId<LocationImage>[];
+  problems: LocationImageProblem[];
+};
+
+type Line = {
+  locationImage: number;
+  problem: {
+    id: number;
+    name: string;
+    grade: string;
+  };
+  points: {
+    type: "LineString";
+    coordinates: [number, number][];
+  };
 };
 
 type LocationImage = {
-  location: number;
+  location: Omit<TopoLocation, "images"> & { problems: LocationImageProblem[] };
   image: string;
   imageWidth: number;
   imageHeight: number;
+  lines: LocationImageLine[];
 };
+
+type LocationImageProblem = Pick<WithId<Problem>, "id" | "name" | "grade">;
+type LocationImageLine = Pick<WithId<Line>, "id" | "points" | "problem">;
 
 type Position = {
   lon: number;

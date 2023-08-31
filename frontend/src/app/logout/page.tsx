@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../context/UserProvider";
+import { logout } from "@/library/api/auth";
 
 const Page = () => {
   const router = useRouter();
@@ -10,11 +11,7 @@ const Page = () => {
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("http://localhost:8009/api/v1/auth/logout/", {
-        method: "POST",
-        credentials: "include",
-      });
-
+      await logout();
       setUser(null);
       router.push("/login");
     })();

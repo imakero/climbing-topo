@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { UserContext } from "../context/UserProvider";
 import { useRouter } from "next/navigation";
 import { LoginSchema } from "./LoginSchema";
+import { login } from "../../library/api/auth";
 
 type LoginData = Output<typeof LoginSchema>;
 
@@ -15,6 +16,7 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<LoginData>({
     resolver: valibotResolver(LoginSchema),
   });
@@ -23,20 +25,18 @@ const Login = () => {
   const router = useRouter();
 
   const onSubmit = async (data: LoginData) => {
-    const res = await fetch("http://localhost:8009/api/v1/auth/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(data),
-    });
-    const { user } = await res.json();
-    setUser(user);
-    router.push("/");
+    try {
+      const { user } = await login(data.username, data.password);
+      setUser(user);
+      router.push("/");
+    } catch (e) {
+      console.error(e);
+      setError("root", {
+        type: "error",
+        message: "Username and/or password is incorrect",
+      });
+    }
   };
-
-  console.log(user);
 
   return (
     <form
@@ -53,6 +53,7 @@ const Login = () => {
         <p className="text-red-500">{errors.password.message}</p>
       )}
       <input type="submit" />
+      {errors.root && <p className="text-red-500">{errors.root.message}</p>}
     </form>
   );
 };

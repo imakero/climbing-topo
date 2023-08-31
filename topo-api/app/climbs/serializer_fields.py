@@ -36,9 +36,9 @@ class LocationField(serializers.Field):
 
             return LocationSerializer(value).data
         else:
-            from climbs.serializers import LocationFlatSerializer
+            from climbs.serializers import LocationImageLocationSerializer
 
-            return LocationFlatSerializer(value).data
+            return LocationImageLocationSerializer(value).data
 
     def to_internal_value(self, data):
         return Location.objects.get(pk=data)
