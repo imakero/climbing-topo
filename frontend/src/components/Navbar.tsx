@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NavUser from "./NavUser";
 
 type NavbarProps = {};
@@ -31,24 +32,12 @@ const Navbar = ({}: NavbarProps) => {
       </div>
       <div className="block w-full flex-grow lg:flex lg:w-auto lg:items-center">
         <div className="text-sm lg:flex-grow">
-          <a
-            href="#responsive-header"
+          <Link
+            href="/search"
             className="mr-4 mt-4 block text-teal-200 hover:text-white lg:mt-0 lg:inline-block"
           >
-            Docs
-          </a>
-          <a
-            href="#responsive-header"
-            className="mr-4 mt-4 block text-teal-200 hover:text-white lg:mt-0 lg:inline-block"
-          >
-            Examples
-          </a>
-          <a
-            href="#responsive-header"
-            className="mt-4 block text-teal-200 hover:text-white lg:mt-0 lg:inline-block"
-          >
-            Blog
-          </a>
+            Search
+          </Link>
         </div>
       </div>
       <div>
