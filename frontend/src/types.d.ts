@@ -71,3 +71,18 @@ type Position = {
 type Tag = {
   name: string;
 };
+
+type Ascent = {
+  user: With<AscentUser>;
+  problem: Problem;
+  comment: string;
+  givenRating: number;
+  createdAt: string;
+  updatedAt: string;
+};
+
+type AscentUser = {
+  username: string;
+  firstName: string;
+  lastName: string;
+};
