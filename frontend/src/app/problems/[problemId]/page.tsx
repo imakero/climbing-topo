@@ -13,7 +13,7 @@ export async function generateStaticParams() {
 async function getProblem(problemId: string) {
   const problem = await fetch(
     `http://localhost:8009/api/v1/problems/${problemId}/`,
-    { next: { revalidate: 60 } },
+    { cache: "no-cache" },
   ).then((res) => res.json());
 
   return problem;
