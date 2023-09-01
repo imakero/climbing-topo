@@ -1,9 +1,9 @@
-import AscentList from "./AscentList";
+import AscentsSection from "./AscentsSection";
 import ProblemMap from "./ProblemMap";
 import Rating from "./Rating";
 
 type ProblemProps = {
-  problem: Problem;
+  problem: WithId<Problem>;
   ascents: WithId<Ascent>[];
 };
 
@@ -39,7 +39,7 @@ const Problem = ({ problem, ascents }: ProblemProps) => {
           <p>This problem has not been rated by anyone.</p>
         )}
       </section>
-      <AscentList ascents={ascents} />
+      <AscentsSection ascents={ascents} problem={problem} />
       <section>
         <h2 className="text-xl">Location</h2>
         <ProblemMap location={problem.location} />
