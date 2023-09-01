@@ -64,6 +64,9 @@ class ProblemFilter(filters.FilterSet):
         return queryset.filter(ascents__lte=value)
 
     def filter_min_rating(self, queryset, name, value):
+        # Include unrated problems if min_rating is 0.
+        if value == 0:
+            return queryset
         return queryset.filter(rating__gte=value)
 
     def filter_max_rating(self, queryset, name, value):

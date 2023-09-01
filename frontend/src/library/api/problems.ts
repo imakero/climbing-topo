@@ -22,10 +22,17 @@ export const removeProblem = async (problemId: number) =>
     credentials: "include",
   });
 
-export const getProblems = async (): Promise<WithId<Problem>[]> =>
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/`, {
-    cache: "no-cache",
-  }).then((res) => res.json());
+export const getProblems = async (
+  searchParams: Record<string, string | string> | undefined = undefined,
+): Promise<WithId<Problem>[]> =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/problems/${
+      searchParams ? "?" + new URLSearchParams(searchParams) : ""
+    }`,
+    {
+      cache: "no-cache",
+    },
+  ).then((res) => res.json());
 
 export const getProblem = async (problemId: number): Promise<WithId<Problem>> =>
   fetch(`${process.env.NEXT_PUBLIC_API_URL}/problems/${problemId}/`, {
