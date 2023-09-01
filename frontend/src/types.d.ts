@@ -73,8 +73,8 @@ type Tag = {
 };
 
 type Ascent = {
-  user: With<AscentUser>;
-  problem: Problem;
+  user: WithId<AscentUser>;
+  problem: number;
   comment: string;
   givenRating: number;
   createdAt: string;
