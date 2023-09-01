@@ -34,11 +34,13 @@ class LocationField(serializers.Field):
         if self.include_nested:
             from climbs.serializers import LocationSerializer
 
-            return LocationSerializer(value).data
+            return LocationSerializer(value, context=self.context).data
         else:
             from climbs.serializers import LocationImageLocationSerializer
 
-            return LocationImageLocationSerializer(value).data
+            return LocationImageLocationSerializer(
+                value, context=self.context
+            ).data
 
     def to_internal_value(self, data):
         return Location.objects.get(pk=data)
