@@ -47,7 +47,8 @@ const NewProblemForm = ({ location, setLocation }: NewProblemFormProps) => {
       } else {
         throw new Error("Failed to add problem");
       }
-    } catch (e) {
+    } catch (error) {
+      console.error(error);
       setLocation(location);
     }
   };
