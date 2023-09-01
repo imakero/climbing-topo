@@ -9,6 +9,7 @@ import Button from "@/components/Button";
 import Slider from "@/components/Slider";
 import { getProblems } from "@/library/api/problems";
 import { useState } from "react";
+import SearchResults from "./components/SearchResults";
 
 type SearchPageProps = {};
 
@@ -131,11 +132,7 @@ const SearchPage = ({}: SearchPageProps) => {
         <input {...register("location")} />
         <Button type="submit">Search</Button>
       </form>
-      {problems.map((problem) => (
-        <div key={problem.id}>
-          {problem.name} ({problem.grade}) @ {problem.location.name}
-        </div>
-      ))}
+      <SearchResults problems={problems} />
     </div>
   );
 };

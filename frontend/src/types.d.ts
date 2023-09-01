@@ -27,6 +27,7 @@ type Problem = {
   tags: string[];
   ascents: number;
   rating: number;
+  distKm?: number;
 };
 
 type TopoLocation = {
