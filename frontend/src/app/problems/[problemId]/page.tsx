@@ -19,10 +19,20 @@ async function getProblem(problemId: string) {
   return problem;
 }
 
+async function getAscents(problemId: string) {
+  const ascents = await fetch(
+    `http://localhost:8009/api/v1/activities/ascents/?problem=${problemId}`,
+    { cache: "no-cache" },
+  ).then((res) => res.json());
+
+  return ascents;
+}
+
 const Page = async ({ params }: { params: { problemId: string } }) => {
   const problem = await getProblem(params.problemId);
+  const ascents = await getAscents(params.problemId);
 
-  return <Problem problem={problem} />;
+  return <Problem problem={problem} ascents={ascents} />;
 };
 
 export default Page;

@@ -1,10 +1,13 @@
+import AscentList from "./AscentList";
 import ProblemMap from "./ProblemMap";
+import Rating from "./Rating";
 
 type ProblemProps = {
   problem: Problem;
+  ascents: WithId<Ascent>[];
 };
 
-const Problem = ({ problem }: ProblemProps) => {
+const Problem = ({ problem, ascents }: ProblemProps) => {
   return (
     <div className="container mx-auto flex flex-col space-y-4">
       <h1 className="text-2xl">
@@ -27,8 +30,16 @@ const Problem = ({ problem }: ProblemProps) => {
       <section>
         <h2 className="text-xl">Statistics</h2>
         <p>Ascents: {problem.ascents}</p>
-        {problem.rating && <p>Average rating: {problem.rating.toFixed(1)}</p>}
+        {problem.rating ? (
+          <p>
+            Average rating: <Rating rating={Math.round(problem.rating)} />(
+            {problem.rating.toFixed(1)})
+          </p>
+        ) : (
+          <p>This problem has not been rated by anyone.</p>
+        )}
       </section>
+      <AscentList ascents={ascents} />
       <section>
         <h2 className="text-xl">Location</h2>
         <ProblemMap location={problem.location} />
