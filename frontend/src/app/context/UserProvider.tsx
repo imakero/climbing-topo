@@ -8,8 +8,8 @@ import {
 } from "react";
 
 type UserContextType = {
-  user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
+  user: WithId<User> | null;
+  setUser: Dispatch<SetStateAction<WithId<User> | null>>;
 };
 
 export const UserContext = createContext<UserContextType>({
@@ -22,7 +22,7 @@ export default function UserProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<WithId<User> | null>(null);
   useEffect(() => {
     (async () => {
       try {
