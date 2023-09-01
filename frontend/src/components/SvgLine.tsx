@@ -1,19 +1,38 @@
-import { calculateLinePath } from "@/library/splines";
+"use client";
+
+import { calculateLinePath, getAbsoluteCoordinates } from "@/library/splines";
 import { Fragment } from "react";
+import { useLocationImage } from "./LocationImageContext";
 
 type LineProps = {
-  points: Point[];
+  linePoints: Line["points"];
   editing?: boolean;
   index?: number;
+  className?: React.ComponentProps<"g">["className"];
 };
 
-const SvgLine = ({ points, editing = false, index = 0 }: LineProps) => {
+const SvgLine = ({
+  linePoints,
+  editing = false,
+  index = 0,
+  className,
+}: LineProps) => {
+  const { overlayWidth, overlayHeight } = useLocationImage();
+  const points = getAbsoluteCoordinates(
+    linePoints,
+    overlayWidth,
+    overlayHeight,
+  );
   if (points.length === 0) return null;
   const { x: lineStartX, y: lineStartY } = points[0];
 
   return (
-    <g className="fill-yellow-500 stroke-teal-200 stroke-2 hover:stroke-pink-500">
-      <path d={calculateLinePath(points)} strokeWidth="3px" fill="none" />
+    <g
+      className={`${
+        className ? className : ""
+      } fill-yellow-500 stroke-teal-500 stroke-[3px] hover:stroke-teal-200 `}
+    >
+      <path d={calculateLinePath(points)} fill="none" />
       {index !== 0 && (
         <>
           <circle cx={lineStartX} cy={lineStartY} r="12" />

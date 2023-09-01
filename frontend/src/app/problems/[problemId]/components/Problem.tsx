@@ -1,6 +1,8 @@
+import LocationImage from "@/components/LocationImage";
 import AscentsSection from "./AscentsSection";
 import ProblemMap from "./ProblemMap";
 import Rating from "./Rating";
+import SvgLine from "@/components/SvgLine";
 
 type ProblemProps = {
   problem: WithId<Problem>;
@@ -8,6 +10,10 @@ type ProblemProps = {
 };
 
 const Problem = ({ problem, ascents }: ProblemProps) => {
+  const images = problem.location.images.filter((image) =>
+    image.lines.some((line) => line.problem.id === problem.id),
+  );
+
   return (
     <div className="container mx-auto flex flex-col space-y-4">
       <h1 className="text-2xl">
@@ -21,6 +27,34 @@ const Problem = ({ problem, ascents }: ProblemProps) => {
           >
             {tag}
           </span>
+        ))}
+      </section>
+      <section>
+        <h2 className="text-xl">Images</h2>
+        {images.map((image) => (
+          <LocationImage
+            key={image.id}
+            locationImage={image}
+            className="max-w-sm"
+          >
+            {image.lines.map((line) =>
+              line.problem.id === problem.id ? (
+                <SvgLine
+                  className="stroke-yellow-500 hover:stroke-yellow-200"
+                  key={line.id}
+                  linePoints={line.points}
+                  editing={false}
+                ></SvgLine>
+              ) : (
+                <SvgLine
+                  className="opacity-50"
+                  key={line.id}
+                  linePoints={line.points}
+                  editing={false}
+                />
+              ),
+            )}
+          </LocationImage>
         ))}
       </section>
       <section>

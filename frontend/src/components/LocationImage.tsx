@@ -2,26 +2,27 @@
 
 import Image from "next/image";
 import SvgOverlay from "./SvgOverlay";
-import { ComponentPropsWithoutRef, useEffect, useRef, useState } from "react";
-import SvgLine from "./SvgLine";
-import { getAbsoluteCoordinates } from "@/library/splines";
-import useWindowSize from "@/app/admin/location-images/[locationImageId]/hooks/useWindowSize";
+import {
+  ComponentPropsWithoutRef,
+  MouseEventHandler,
+  PropsWithChildren,
+} from "react";
+import LocationImageProvider, {
+  useLocationImage,
+} from "./LocationImageContext";
 
 type LocationImageProps = ComponentPropsWithoutRef<"div"> & {
   locationImage: WithId<LocationImage>;
+  onClick?: MouseEventHandler<SVGSVGElement>;
 };
 
-const LocationImage = ({ locationImage, ...props }: LocationImageProps) => {
-  const overlayRef = useRef<SVGSVGElement>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  useWindowSize();
-
-  const overlayWidth = overlayRef.current?.width.baseVal.value || 1;
-  const overlayHeight = overlayRef.current?.height.baseVal.value || 1;
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+const LocationImage = ({
+  locationImage,
+  onClick,
+  children,
+  ...props
+}: PropsWithChildren<LocationImageProps>) => {
+  const { overlayRef } = useLocationImage();
 
   return (
     <div {...props}>
@@ -32,25 +33,23 @@ const LocationImage = ({ locationImage, ...props }: LocationImageProps) => {
           width={locationImage.imageWidth}
           height={locationImage.imageHeight}
         />
-        <SvgOverlay ref={overlayRef}>
-          <g className={`${loading ? "hidden" : ""}`}>
-            {locationImage.lines.map((line, index) => (
-              <SvgLine
-                key={line.id}
-                points={getAbsoluteCoordinates(
-                  line.points,
-                  overlayWidth,
-                  overlayHeight,
-                )}
-                editing={false}
-                index={index + 1}
-              />
-            ))}
-          </g>
+        <SvgOverlay ref={overlayRef} onClick={onClick}>
+          {overlayRef && <g>{children}</g>}
         </SvgOverlay>
       </div>
     </div>
   );
 };
 
-export default LocationImage;
+const LocationImageWrapper = ({
+  children,
+  ...props
+}: PropsWithChildren<LocationImageProps>) => {
+  return (
+    <LocationImageProvider>
+      <LocationImage {...props}>{children}</LocationImage>
+    </LocationImageProvider>
+  );
+};
+
+export default LocationImageWrapper;

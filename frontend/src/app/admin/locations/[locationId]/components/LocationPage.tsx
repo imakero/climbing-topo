@@ -12,6 +12,7 @@ import { removeProblem } from "@/library/api/problems";
 import NewImageForm from "./NewImageForm";
 import { removeLocationImage } from "@/library/api/locationImages";
 import { removeLine } from "@/library/api/lines";
+import SvgLine from "@/components/SvgLine";
 
 type LocationPageProps = {
   location: WithId<TopoLocation>;
@@ -127,7 +128,15 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
             <Button onClick={() => deleteLocationImage(locationImage.id)}>
               Delete
             </Button>
-            <LocationImage locationImage={locationImage} />
+            <LocationImage locationImage={locationImage}>
+              {locationImage.lines.map((line, index) => (
+                <SvgLine
+                  key={line.id}
+                  linePoints={line.points}
+                  index={index + 1}
+                />
+              ))}
+            </LocationImage>
             <LocationImageProblems
               lines={locationImage.lines}
               onDelete={deleteLine}
