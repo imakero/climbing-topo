@@ -1,6 +1,6 @@
 "use client";
 
-import { grades, gradeToIndex } from "@/library/grades";
+import { grades } from "@/library/grades";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
 import { Output } from "valibot";
@@ -58,7 +58,6 @@ const SearchPage = ({}: SearchPageProps) => {
     if (data.location) params["location"] = data.location;
 
     const results = await getProblems(params);
-    console.log(results.length);
     setProblems(results);
   };
 

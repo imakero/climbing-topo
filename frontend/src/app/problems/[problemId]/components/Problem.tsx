@@ -1,10 +1,20 @@
+import LocationImage from "@/components/LocationImage";
+import AscentsSection from "./AscentsSection";
 import ProblemMap from "./ProblemMap";
+import Rating from "./Rating";
+import SvgLine from "@/components/SvgLine";
+import Link from "next/link";
 
 type ProblemProps = {
-  problem: Problem;
+  problem: WithId<Problem>;
+  ascents: WithId<Ascent>[];
 };
 
-const Problem = ({ problem }: ProblemProps) => {
+const Problem = ({ problem, ascents }: ProblemProps) => {
+  const images = problem.location.images.filter((image) =>
+    image.lines.some((line) => line.problem.id === problem.id),
+  );
+
   return (
     <div className="container mx-auto flex flex-col space-y-4">
       <h1 className="text-2xl">
@@ -21,16 +31,62 @@ const Problem = ({ problem }: ProblemProps) => {
         ))}
       </section>
       <section>
+        <h2 className="text-xl">Images</h2>
+        {images.map((image) => (
+          <LocationImage
+            key={image.id}
+            locationImage={image}
+            className="max-w-sm"
+          >
+            {image.lines.map((line) =>
+              line.problem.id === problem.id ? (
+                <SvgLine
+                  className="stroke-yellow-500 hover:stroke-yellow-200"
+                  key={line.id}
+                  linePoints={line.points}
+                  editing={false}
+                ></SvgLine>
+              ) : (
+                <SvgLine
+                  className="opacity-50"
+                  key={line.id}
+                  linePoints={line.points}
+                  editing={false}
+                />
+              ),
+            )}
+          </LocationImage>
+        ))}
+      </section>
+      <section>
         <h2 className="text-xl">About</h2>
         <p>{problem.description}</p>
       </section>
       <section>
         <h2 className="text-xl">Statistics</h2>
         <p>Ascents: {problem.ascents}</p>
-        {problem.rating && <p>Average rating: {problem.rating.toFixed(1)}</p>}
+        {problem.rating ? (
+          <p>
+            Average rating: <Rating rating={Math.round(problem.rating)} />(
+            {problem.rating.toFixed(1)})
+          </p>
+        ) : (
+          <p>This problem has not been rated by anyone.</p>
+        )}
       </section>
+      <AscentsSection ascents={ascents} problem={problem} />
       <section>
         <h2 className="text-xl">Location</h2>
+        <p>
+          See other lines at{" "}
+          <Link
+            className="text-teal-500 hover:text-teal-200"
+            href={`/locations/${problem.location.id}`}
+          >
+            {problem.location.name}
+          </Link>
+          .
+        </p>
         <ProblemMap location={problem.location} />
       </section>
     </div>

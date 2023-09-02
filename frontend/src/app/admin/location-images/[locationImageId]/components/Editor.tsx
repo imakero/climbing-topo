@@ -11,6 +11,7 @@ import useWindowSize from "../hooks/useWindowSize";
 import LocationImageProblems from "@/components/LocationImageProblems";
 import { addLine, removeLine } from "@/library/api/lines";
 import { useRouter } from "next/navigation";
+import LocationImage from "@/components/LocationImage";
 
 type EditorProps = {
   locationImage: WithId<LocationImage>;
@@ -124,7 +125,7 @@ const Editor = ({ locationImage: locationImageProp }: EditorProps) => {
 
   return (
     <div className="flex flex-col">
-      <div>
+      {/* <div>
         <div className="relative inline-block">
           <Image
             src={locationImage.image}
@@ -170,7 +171,35 @@ const Editor = ({ locationImage: locationImageProp }: EditorProps) => {
             </g>
           </SvgOverlay>
         </div>
-      </div>
+      </div> */}
+      <LocationImage
+        locationImage={locationImage}
+        onClick={(e) => {
+          if (!editing) return;
+          const rect = (e.target as HTMLImageElement).getBoundingClientRect();
+          const x = (e.clientX - rect.left) / rect.width;
+          const y = (e.clientY - rect.top) / rect.height;
+          setRelativePoints([...relativePoints, { x, y }]);
+        }}
+      >
+        {editing && (
+          <SvgLine
+            linePoints={{
+              type: "LineString",
+              coordinates: relativePoints.map((point) => [point.x, point.y]),
+            }}
+            editing={true}
+          />
+        )}
+        {locationImage.lines.map((line, index) => (
+          <SvgLine
+            key={line.id}
+            linePoints={line.points}
+            editing={false}
+            index={index + 1}
+          />
+        ))}
+      </LocationImage>
       <ul>
         <LocationImageProblems
           lines={locationImage.lines}

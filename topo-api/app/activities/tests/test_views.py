@@ -4,6 +4,17 @@ from activities.models import Ascent
 from rest_framework import status
 
 
+def compare_ascent(response_ascent, ascent):
+    assert response_ascent["problem"] == ascent.problem.id
+    user = response_ascent["user"]
+    assert user["id"] == ascent.user.id
+    assert user["username"] == ascent.user.username
+    assert user["first_name"] == ascent.user.first_name
+    assert user["last_name"] == ascent.user.last_name
+    assert response_ascent["given_rating"] == ascent.given_rating
+    assert response_ascent["comment"] == ascent.comment
+
+
 def test_add_ascent(db, client, user, problem):
     assert Ascent.objects.count() == 0
 
@@ -50,16 +61,10 @@ def test_get_ascents(db, client, ascent, ascent_other):
     assert len(response.data) == 2
 
     ascent_data = response.data[0]
-    assert ascent_data["problem"] == ascent.problem.id
-    assert ascent_data["user"] == ascent.user.id
-    assert ascent_data["given_rating"] == ascent.given_rating
-    assert ascent_data["comment"] == ascent.comment
+    compare_ascent(ascent_data, ascent)
 
     ascent_data_other = response.data[1]
-    assert ascent_data_other["problem"] == ascent_other.problem.id
-    assert ascent_data_other["user"] == ascent_other.user.id
-    assert ascent_data_other["given_rating"] == ascent_other.given_rating
-    assert ascent_data_other["comment"] == ascent_other.comment
+    compare_ascent(ascent_data_other, ascent_other)
 
 
 def test_can_get_ascents_without_auth(db, client, ascent, ascent_other):
@@ -85,10 +90,7 @@ def test_filter_ascents_by_problem(db, client, ascent, ascent_other):
     assert len(response.data) == 1
 
     ascent_data = response.data[0]
-    assert ascent_data["problem"] == ascent.problem.id
-    assert ascent_data["user"] == ascent.user.id
-    assert ascent_data["given_rating"] == ascent.given_rating
-    assert ascent_data["comment"] == ascent.comment
+    compare_ascent(ascent_data, ascent)
 
 
 def test_filter_ascents_by_user(db, client, ascent, ascent_other):
@@ -104,10 +106,7 @@ def test_filter_ascents_by_user(db, client, ascent, ascent_other):
     assert len(response.data) == 1
 
     ascent_data = response.data[0]
-    assert ascent_data["problem"] == ascent.problem.id
-    assert ascent_data["user"] == ascent.user.id
-    assert ascent_data["given_rating"] == ascent.given_rating
-    assert ascent_data["comment"] == ascent.comment
+    compare_ascent(ascent_data, ascent)
 
 
 def test_get_ascent(db, client, ascent):
@@ -116,10 +115,7 @@ def test_get_ascent(db, client, ascent):
     assert response.status_code == status.HTTP_200_OK
 
     ascent_data = response.data
-    assert ascent_data["problem"] == ascent.problem.id
-    assert ascent_data["user"] == ascent.user.id
-    assert ascent_data["given_rating"] == ascent.given_rating
-    assert ascent_data["comment"] == ascent.comment
+    compare_ascent(ascent_data, ascent)
 
 
 def test_can_get_ascent_without_auth(db, client, ascent):
