@@ -3,6 +3,7 @@ import AscentsSection from "./AscentsSection";
 import ProblemMap from "./ProblemMap";
 import Rating from "./Rating";
 import SvgLine from "@/components/SvgLine";
+import Link from "next/link";
 
 type ProblemProps = {
   problem: WithId<Problem>;
@@ -76,6 +77,16 @@ const Problem = ({ problem, ascents }: ProblemProps) => {
       <AscentsSection ascents={ascents} problem={problem} />
       <section>
         <h2 className="text-xl">Location</h2>
+        <p>
+          See other lines at{" "}
+          <Link
+            className="text-teal-500 hover:text-teal-200"
+            href={`/locations/${problem.location.id}`}
+          >
+            {problem.location.name}
+          </Link>
+          .
+        </p>
         <ProblemMap location={problem.location} />
       </section>
     </div>
