@@ -35,7 +35,7 @@ class LocationImageLineSerializer(serializers.ModelSerializer):
 
         class Meta:
             model = Problem
-            fields = ["id", "name", "grade", "rating"]
+            fields = ["id", "name", "grade", "rating", "description"]
             read_only_fields = ["rating"]
 
     problem = ProblemSerializer(read_only=True)
