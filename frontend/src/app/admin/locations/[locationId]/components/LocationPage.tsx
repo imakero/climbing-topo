@@ -3,7 +3,7 @@
 import Button from "@/components/Button";
 import LinkButton from "@/components/LinkButton";
 import LocationImage from "@/components/LocationImage";
-import LocationImageProblems from "@/components/LocationImageProblems";
+import AdminLocationImageProblems from "@/components/AdminLocationImageProblems";
 import Link from "next/link";
 import NewProblemForm from "./NewProblemForm";
 import { useRouter } from "next/navigation";
@@ -137,7 +137,7 @@ const LocationPage = ({ location: locationProp }: LocationPageProps) => {
                 />
               ))}
             </LocationImage>
-            <LocationImageProblems
+            <AdminLocationImageProblems
               lines={locationImage.lines}
               onDelete={deleteLine}
             />
