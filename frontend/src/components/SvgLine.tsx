@@ -1,10 +1,11 @@
 "use client";
 
 import { calculateLinePath, getAbsoluteCoordinates } from "@/library/splines";
-import { Fragment } from "react";
+import { ComponentPropsWithoutRef, Fragment } from "react";
 import { useLocationImage } from "./LocationImageContext";
+import { twMerge } from "tailwind-merge";
 
-type LineProps = {
+type LineProps = ComponentPropsWithoutRef<"g"> & {
   linePoints: Line["points"];
   editing?: boolean;
   index?: number;
@@ -16,6 +17,7 @@ const SvgLine = ({
   editing = false,
   index = 0,
   className,
+  ...props
 }: LineProps) => {
   const { overlayWidth, overlayHeight } = useLocationImage();
   const points = getAbsoluteCoordinates(
@@ -28,9 +30,11 @@ const SvgLine = ({
 
   return (
     <g
-      className={`${
-        className ? className : ""
-      } fill-yellow-500 stroke-teal-500 stroke-[3px] hover:stroke-teal-200 `}
+      className={twMerge(
+        `cursor-pointer fill-yellow-500 stroke-teal-500 stroke-[3px] hover:stroke-teal-200`,
+        className,
+      )}
+      {...props}
     >
       <path d={calculateLinePath(points)} fill="none" />
       {index !== 0 && (
