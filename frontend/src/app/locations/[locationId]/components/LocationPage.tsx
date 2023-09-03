@@ -11,7 +11,7 @@ const LocationPage = ({ location }: LocationPageProps) => {
       <h1 className="text-3xl">{location.name}</h1>
       <section>
         <h2 className="text-xl">Information</h2>
-        <CopyableCoordinates>
+        <CopyableCoordinates value={location.position.googleMapsString}>
           Location 📍 ({location.position.googleMapsString})
         </CopyableCoordinates>
       </section>

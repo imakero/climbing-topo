@@ -4,16 +4,19 @@ import { PropsWithChildren, useState } from "react";
 import Button from "./Button";
 import Tooltip from "./Tooltip";
 
-type CopyableCoordinatesProps = {};
+type CopyableCoordinatesProps = {
+  value: string;
+};
 
 const CopyableCoordinates = ({
+  value,
   children,
 }: PropsWithChildren<CopyableCoordinatesProps>) => {
   const [tooltipText, setTooltipText] = useState("Click to copy to clipboard");
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setTooltipText("Copied!");
-    navigator.clipboard.writeText("Copied!");
+    navigator.clipboard.writeText(value);
     setTimeout(() => {
       setTooltipText("Click to copy to clipboard");
     }, 2500);
