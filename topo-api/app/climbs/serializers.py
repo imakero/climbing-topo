@@ -31,9 +31,12 @@ class ProblemSerializer(serializers.ModelSerializer):
 
 class LocationImageLineSerializer(serializers.ModelSerializer):
     class ProblemSerializer(serializers.ModelSerializer):
+        rating = serializers.FloatField(read_only=True)
+
         class Meta:
             model = Problem
-            fields = ["id", "name", "grade"]
+            fields = ["id", "name", "grade", "rating"]
+            read_only_fields = ["rating"]
 
     problem = ProblemSerializer(read_only=True)
 

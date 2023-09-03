@@ -44,6 +44,7 @@ type Line = {
     id: number;
     name: string;
     grade: string;
+    rating: number;
   };
   points: {
     type: "LineString";
