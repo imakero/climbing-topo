@@ -15,7 +15,7 @@ export default function Topo({ locationImage: image }: TopoProps) {
   const router = useRouter();
 
   return (
-    <div className="max-w-lg">
+    <div className="mb-4 max-w-lg">
       <LocationImage key={image.id} locationImage={image}>
         {image.lines.map((line, index) => (
           <SvgLine
@@ -24,6 +24,7 @@ export default function Topo({ locationImage: image }: TopoProps) {
             index={index + 1}
             onMouseEnter={() => setHighlight(index)}
             onClick={() => router.push(`/problems/${line.problem.id}`)}
+            className={highlight === index ? "stroke-teal-200" : ""}
           />
         ))}
       </LocationImage>
