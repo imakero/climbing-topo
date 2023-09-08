@@ -1,14 +1,26 @@
 import Link from "next/link";
+import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 
-type SearchResultsProps = {
+type SearchResultsProps = ComponentPropsWithoutRef<"section"> & {
   problems: WithId<Problem>[];
 };
 
-const SearchResults = ({ problems }: SearchResultsProps) => {
+const SearchResults = ({ problems, ...props }: SearchResultsProps) => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (sectionRef.current) {
+      sectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [problems]);
+
   if (problems.length === 0) return null;
 
   return (
-    <section className="mt-8 flex flex-col space-y-2">
+    <section
+      className="mt-8 flex flex-col space-y-2"
+      {...props}
+      ref={sectionRef}
+    >
       <h2 className="text-2xl">Results</h2>
       <table>
         <thead>
