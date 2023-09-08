@@ -1,4 +1,4 @@
-import { maxValue, minValue, number, object, string } from "valibot";
+import { array, maxValue, minValue, number, object, string } from "valibot";
 
 export const SearchFormSchema = object({
   minGrade: number(),
@@ -19,4 +19,5 @@ export const SearchFormSchema = object({
   name: string(),
   description: string(),
   location: string(),
+  tags: array(string()),
 });

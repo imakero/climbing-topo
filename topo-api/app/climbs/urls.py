@@ -8,6 +8,7 @@ from climbs.views import (
     LocationsView,
     ProblemsView,
     ProblemView,
+    TagsView,
 )
 
 urlpatterns = [
@@ -35,4 +36,5 @@ urlpatterns = [
         LineView.as_view(),
         name="line",
     ),
+    path("tags/", TagsView.as_view(), name="tags"),
 ]

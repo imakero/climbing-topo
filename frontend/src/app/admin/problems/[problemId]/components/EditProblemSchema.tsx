@@ -1,4 +1,4 @@
-import { object, string, maxLength } from "valibot";
+import { object, string, maxLength, array } from "valibot";
 
 export const EditProblemSchema = object({
   name: string([maxLength(100, "Name must be less than 100 characters")]),
@@ -6,4 +6,5 @@ export const EditProblemSchema = object({
     maxLength(1000, "Description must be less than 1000 characters"),
   ]),
   grade: string([maxLength(4, "Use a french grade with maximum 4 characters")]),
+  tags: array(string()),
 });

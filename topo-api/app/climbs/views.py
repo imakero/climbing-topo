@@ -4,12 +4,13 @@ from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
 from climbs.filters import ProblemFilter
-from climbs.models import Problem, Location, LocationImage, Line
+from climbs.models import Problem, Location, LocationImage, Line, Tag
 from climbs.serializers import (
     ProblemSerializer,
     LineSerializer,
     LocationImageSerializer,
     LocationSerializer,
+    TagSerializer,
 )
 
 
@@ -114,3 +115,8 @@ class LineView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LineSerializer
     queryset = Line.objects.all()
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+
+class TagsView(generics.ListAPIView):
+    serializer_class = TagSerializer
+    queryset = Tag.objects.all()
