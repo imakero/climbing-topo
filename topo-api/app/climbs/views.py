@@ -1,3 +1,5 @@
+from django.db.models import Prefetch
+
 from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 
@@ -49,29 +51,57 @@ class ProblemView(generics.RetrieveUpdateDestroyAPIView):
 
 class LocationsView(generics.ListCreateAPIView):
     serializer_class = LocationSerializer
-    queryset = Location.objects.all()
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+    def get_queryset(self):
+        return Location.objects.all().prefetch_related(
+            Prefetch(
+                "locationimage_set__lines__problem",
+                queryset=Problem.objects.with_annotations("ascents", "rating"),
+            )
+        )
 
 
 class LocationView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LocationSerializer
-    queryset = Location.objects.all()
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+
+    def get_queryset(self):
+        return Location.objects.all().prefetch_related(
+            Prefetch(
+                "locationimage_set__lines__problem",
+                queryset=Problem.objects.with_annotations("ascents", "rating"),
+            )
+        )
 
 
 class LocationImagesView(generics.ListCreateAPIView):
     serializer_class = LocationImageSerializer
-    queryset = LocationImage.objects.all()
+
+    def get_queryset(self):
+        return LocationImage.objects.all().prefetch_related(
+            Prefetch(
+                "lines__problem",
+                queryset=Problem.objects.with_annotations("ascents", "rating"),
+            )
+        )
 
 
 class LocationImageView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = LocationImageSerializer
-    queryset = LocationImage.objects.all()
 
     def perform_destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.image.delete(save=False)
         return super().perform_destroy(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return LocationImage.objects.all().prefetch_related(
+            Prefetch(
+                "lines__problem",
+                queryset=Problem.objects.with_annotations("ascents", "rating"),
+            )
+        )
 
 
 class LinesView(generics.ListCreateAPIView):
