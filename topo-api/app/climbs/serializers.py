@@ -108,3 +108,9 @@ class LineSerializer(serializers.ModelSerializer):
         request = self.context.get("request", None)
         if request and request.method in ["PATCH", "PUT"]:
             self.fields["location_image"].read_only = True
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ["id", "name"]
