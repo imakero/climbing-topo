@@ -1,9 +1,8 @@
+import { getProblems } from "@/library/api/problems";
 import Problem from "./components/Problem";
 
 export async function generateStaticParams() {
-  const problems = await fetch("http://localhost:8009/api/v1/problems/").then(
-    (res) => res.json(),
-  );
+  const { results: problems } = await getProblems();
 
   return problems.map((problem: WithId<Problem>) => ({
     problemId: problem.id.toString(),

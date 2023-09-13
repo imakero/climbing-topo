@@ -12,6 +12,7 @@ class AscentsView(generics.ListCreateAPIView):
     serializer_class = AscentSerializer
     filterset_class = AscentFilter
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = None
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

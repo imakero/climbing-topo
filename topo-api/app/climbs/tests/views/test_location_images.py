@@ -22,9 +22,9 @@ def test_get_location_images(db, client, location_image, location_image_other):
     response = client.get(reverse("location-images"))
 
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert response.data["count"] == 2
 
-    first_image, second_image = response.data
+    first_image, second_image = response.data["results"]
     compare_location_images(first_image, location_image)
     compare_location_images(second_image, location_image_other)
 

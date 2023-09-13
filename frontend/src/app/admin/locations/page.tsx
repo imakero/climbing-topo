@@ -1,15 +1,16 @@
 import { getLocations } from "@/library/api/locations";
-import LocationsPage from "./components/Locations";
-import NewLocationForm from "./components/NewLocationForm";
+import LocationsPage from "./components/LocationsPage";
 
-type AdminLocationsProps = {};
+export default async function AdminLocations({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) {
+  let params: Record<string, string> = {};
+  if (searchParams["page"]) {
+    params["page"] = searchParams["page"] as string;
+  }
+  const { results, ...props } = await getLocations(params);
 
-export default async function AdminLocations({}: AdminLocationsProps) {
-  const locations = await getLocations();
-
-  return (
-    <>
-      <LocationsPage locations={locations} />
-    </>
-  );
+  return <LocationsPage locations={results} {...props} />;
 }

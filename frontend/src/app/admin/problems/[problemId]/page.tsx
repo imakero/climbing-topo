@@ -5,7 +5,7 @@ import {
 import ProblemPage from "./components/ProblemPage";
 
 export async function generateStaticParams() {
-  const problems = await getProblems();
+  const { results: problems } = await getProblems();
 
   return problems.map((problem: WithId<Problem>) => ({
     problemId: problem.id.toString(),

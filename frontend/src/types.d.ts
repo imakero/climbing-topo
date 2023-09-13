@@ -55,7 +55,9 @@ type Line = {
 };
 
 type LocationImage = {
-  location: Omit<TopoLocation, "images"> & { problems: LocationImageProblem[] };
+  location: Omit<WithId<TopoLocation>, "images"> & {
+    problems: LocationImageProblem[];
+  };
   image: string;
   imageWidth: number;
   imageHeight: number;
@@ -89,3 +91,17 @@ type AscentUser = {
   firstName: string;
   lastName: string;
 };
+
+type PaginatedApiResponse<T> = {
+  results: T;
+  next: string | null;
+  previous: string | null;
+  count: string;
+};
+
+type PaginatedPageProps<T> = {
+  page?: string;
+  next: null | string;
+  previous: null | string;
+  count: string;
+} & T;

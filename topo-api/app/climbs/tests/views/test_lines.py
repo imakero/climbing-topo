@@ -27,9 +27,9 @@ def test_get_lines(
     response = client.get(reverse("lines"))
 
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert response.data["count"] == 2
 
-    first_line, second_line = response.data
+    first_line, second_line = response.data["results"]
     compare_line(first_line, line)
     compare_line(second_line, line_other)
 

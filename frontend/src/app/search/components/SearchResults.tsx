@@ -1,3 +1,4 @@
+import PaginationController from "@/components/PaginationController";
 import Link from "next/link";
 import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 
@@ -7,6 +8,7 @@ type SearchResultsProps = ComponentPropsWithoutRef<"section"> & {
 
 const SearchResults = ({ problems, ...props }: SearchResultsProps) => {
   const sectionRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (sectionRef.current) {
       sectionRef.current.scrollIntoView({ behavior: "smooth" });

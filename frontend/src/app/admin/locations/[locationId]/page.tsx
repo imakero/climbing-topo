@@ -2,7 +2,7 @@ import { getLocation, getLocations } from "@/library/api/locations";
 import LocationPage from "./components/LocationPage";
 
 export async function generateStaticParams() {
-  const locations = await getLocations();
+  const { results: locations } = await getLocations();
 
   return locations.map((location) => ({
     locationId: location.id.toString(),

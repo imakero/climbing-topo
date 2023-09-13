@@ -31,9 +31,9 @@ def test_get_locations(
     response = client.get(reverse("locations"))
 
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert response.data["count"] == 2
 
-    first_location, second_location = response.data
+    first_location, second_location = response.data["results"]
     compare_locations(first_location, location)
     compare_locations(second_location, location_other)
 

@@ -12,6 +12,7 @@ import { useState } from "react";
 import SearchResults from "./SearchResults";
 import MultiSelect from "@/components/MultiSelect";
 import PositionSelector from "@/components/PositionSelector";
+import { PAGE_SIZE } from "@/library/constants";
 
 type SearchFormProps = {
   tags: WithId<Tag>[];
@@ -25,6 +26,7 @@ export default function SearchForm({ tags }: SearchFormProps) {
     handleSubmit,
     formState: { errors },
     watch,
+    getValues,
     control,
   } = useForm<SearchFormData>({
     resolver: valibotResolver(SearchFormSchema),
@@ -42,11 +44,20 @@ export default function SearchForm({ tags }: SearchFormProps) {
       tags: [],
     },
   });
-  const [problems, setProblems] = useState<WithId<Problem>[]>([]);
+  const [response, setResponse] = useState<
+    PaginatedApiResponse<WithId<Problem>[]>
+  >({ count: "0", next: null, previous: null, results: [] });
+  const [page, setPage] = useState(1);
   const [geoFilter, setGeoFilter] = useState(false);
   const maxGradeIndex = grades.length - 1;
 
   const onSubmit = async (data: SearchFormData) => {
+    const params = getParams();
+    await fetchResults(params, 1);
+  };
+
+  const getParams = () => {
+    const data = getValues();
     const params: Record<string, string> = {};
     const grade = grades.slice(data.minGrade, data.maxGrade + 1).join(",");
     params["grade"] = grade;
@@ -65,9 +76,14 @@ export default function SearchForm({ tags }: SearchFormProps) {
     if (data.description) params["description"] = data.description;
     if (data.location) params["location"] = data.location;
     if (data.tags.length > 0) params["tags"] = data.tags.join(",");
+    return params;
+  };
 
-    const results = await getProblems(params);
-    setProblems(results);
+  const fetchResults = async (params: Record<string, string>, page: number) => {
+    params["page"] = page.toString();
+    const response = await getProblems(params);
+    setPage(page);
+    setResponse(response);
   };
 
   return (
@@ -159,6 +175,7 @@ export default function SearchForm({ tags }: SearchFormProps) {
                   />
                   <label htmlFor="latitude">Latitude</label>
                   <input
+                    id="latitude"
                     name="latitude"
                     value={field.value.latitude}
                     onChange={(e) =>
@@ -170,6 +187,7 @@ export default function SearchForm({ tags }: SearchFormProps) {
                   />
                   <label htmlFor="longitude">Longitude</label>
                   <input
+                    id="longitude"
                     name="longitude"
                     value={field.value.longitude}
                     onChange={(e) =>
@@ -187,11 +205,11 @@ export default function SearchForm({ tags }: SearchFormProps) {
         <hr />
 
         <label htmlFor="name">Name should contain:</label>
-        <input {...register("name")} />
+        <input id="name" {...register("name")} />
         <label htmlFor="description">Description should contain:</label>
-        <input {...register("description")} />
+        <input id="description" {...register("description")} />
         <label htmlFor="location">Location should contain:</label>
-        <input {...register("location")} />
+        <input id="location" {...register("location")} />
         <label htmlFor="tags">Filter results on tags:</label>
         <Controller
           name="tags"
@@ -212,7 +230,37 @@ export default function SearchForm({ tags }: SearchFormProps) {
         />
         <Button type="submit">Search</Button>
       </form>
-      <SearchResults problems={problems} />
+      {parseInt(response.count) > PAGE_SIZE && (
+        <div className="flex w-full flex-row justify-between py-4">
+          {response.previous === null ? (
+            <Button disabled>Previous</Button>
+          ) : (
+            <Button
+              onClick={() => {
+                fetchResults(getParams(), page - 1);
+              }}
+            >
+              Previous
+            </Button>
+          )}
+          <p>
+            Page {page} of{" "}
+            {Math.floor((parseInt(response.count) - 1) / PAGE_SIZE) + 1}
+          </p>
+          {response.next === null ? (
+            <Button disabled>Next</Button>
+          ) : (
+            <Button
+              onClick={() => {
+                fetchResults(getParams(), page + 1);
+              }}
+            >
+              Next
+            </Button>
+          )}
+        </div>
+      )}
+      <SearchResults problems={response.results} />
     </>
   );
 }

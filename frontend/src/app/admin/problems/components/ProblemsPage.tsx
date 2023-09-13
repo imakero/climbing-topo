@@ -2,16 +2,23 @@
 
 import Button from "@/components/Button";
 import LinkButton from "@/components/LinkButton";
+import PaginationController from "@/components/PaginationController";
 import { removeProblem } from "@/library/api/problems";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type ProblemsPageProps = {
+type ProblemsPageProps = PaginatedPageProps<{
   problems: WithId<Problem>[];
-};
+}>;
 
-const ProblemsPage = ({ problems: problemsProp }: ProblemsPageProps) => {
+const ProblemsPage = ({
+  problems: problemsProp,
+  count,
+  next,
+  previous,
+  page,
+}: ProblemsPageProps) => {
   const [problems, setProblems] = useState(problemsProp);
   const router = useRouter();
 
@@ -36,7 +43,14 @@ const ProblemsPage = ({ problems: problemsProp }: ProblemsPageProps) => {
 
   return (
     <div>
-      <h1 className="text-2x">Problems Admin</h1>
+      <h1 className="text-2xl">Problems Admin</h1>
+      <PaginationController
+        count={count}
+        previous={previous}
+        next={next}
+        page={page}
+        baseUrl="/admin/problems"
+      />
       <ul>
         {problems.map((problem) => (
           <li key={problem.id}>

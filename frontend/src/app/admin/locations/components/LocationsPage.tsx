@@ -7,12 +7,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import NewLocationForm from "./NewLocationForm";
+import PaginationController from "@/components/PaginationController";
 
-type LocationsPageProps = {
+type LocationsPageProps = PaginatedPageProps<{
   locations: WithId<TopoLocation>[];
-};
+}>;
 
-const LocationsPage = ({ locations: locationsProp }: LocationsPageProps) => {
+const LocationsPage = ({
+  locations: locationsProp,
+  count,
+  page,
+  next,
+  previous,
+}: LocationsPageProps) => {
   const [locations, setLocations] = useState(locationsProp);
   const router = useRouter();
 
@@ -38,6 +45,13 @@ const LocationsPage = ({ locations: locationsProp }: LocationsPageProps) => {
   return (
     <div>
       <h1 className="text-2xl">Locations Admin</h1>
+      <PaginationController
+        count={count}
+        page={page}
+        baseUrl="/admin/locations"
+        next={next}
+        previous={previous}
+      />
       <ul>
         {locations.map((location) => (
           <li key={location.id}>
