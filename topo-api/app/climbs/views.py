@@ -120,3 +120,4 @@ class LineView(generics.RetrieveUpdateDestroyAPIView):
 class TagsView(generics.ListAPIView):
     serializer_class = TagSerializer
     queryset = Tag.objects.all()
+    pagination_class = None
