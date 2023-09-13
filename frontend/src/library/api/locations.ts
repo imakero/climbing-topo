@@ -10,10 +10,17 @@ export const addLocation = async (location: NewLocationData) =>
     body: JSON.stringify(location),
   });
 
-export const getLocations = async (): Promise<WithId<TopoLocation>[]> =>
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/`, {
-    cache: "no-cache",
-  }).then((res) => res.json());
+export const getLocations = async (
+  searchParams: Record<string, string> | undefined = undefined,
+): Promise<PaginatedApiResponse<WithId<TopoLocation>[]>> =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/locations/${
+      searchParams ? "?" + new URLSearchParams(searchParams) : ""
+    }`,
+    {
+      cache: "no-cache",
+    },
+  ).then((res) => res.json());
 
 export const getLocation = async (
   locationId: number,

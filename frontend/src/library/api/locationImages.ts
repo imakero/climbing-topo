@@ -14,10 +14,17 @@ export const removeLocationImage = async (locationImageId: number) =>
     },
   );
 
-export const getLocationImages = async (): Promise<WithId<LocationImage>[]> =>
-  fetch(`${process.env.NEXT_PUBLIC_API_URL}/location-images/`, {
-    cache: "no-cache",
-  }).then((res) => res.json());
+export const getLocationImages = async (
+  searchParams: Record<string, string> | undefined = undefined,
+): Promise<PaginatedApiResponse<WithId<LocationImage>[]>> =>
+  fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/location-images/${
+      searchParams ? "?" + new URLSearchParams(searchParams) : ""
+    }`,
+    {
+      cache: "no-cache",
+    },
+  ).then((res) => res.json());
 
 export const getLocationImage = async (
   locationImageId: number,

@@ -23,8 +23,8 @@ export const removeProblem = async (problemId: number) =>
   });
 
 export const getProblems = async (
-  searchParams: Record<string, string | string> | undefined = undefined,
-): Promise<WithId<Problem>[]> =>
+  searchParams: Record<string, string> | undefined = undefined,
+): Promise<PaginatedApiResponse<WithId<Problem>[]>> =>
   fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/problems/${
       searchParams ? "?" + new URLSearchParams(searchParams) : ""
