@@ -11,6 +11,7 @@ import { getProblems } from "@/library/api/problems";
 import { useState } from "react";
 import SearchResults from "./SearchResults";
 import MultiSelect from "@/components/MultiSelect";
+import PositionSelector from "@/components/PositionSelector";
 
 type SearchFormProps = {
   tags: WithId<Tag>[];
@@ -34,9 +35,7 @@ export default function SearchForm({ tags }: SearchFormProps) {
       maxAscents: 1000,
       minRating: 0,
       maxRating: 5,
-      distKm: 10,
-      lat: 0,
-      lon: 0,
+      position: { latitude: 59.775955, longitude: 17.372902, distKm: 10 },
       name: "",
       description: "",
       location: "",
@@ -57,9 +56,9 @@ export default function SearchForm({ tags }: SearchFormProps) {
     params["maxRating"] = data.maxRating.toString();
 
     if (geoFilter) {
-      params["distKm"] = data.distKm.toString();
-      params["lat"] = data.lat.toString();
-      params["lon"] = data.lon.toString();
+      params["distKm"] = data.position.distKm.toString();
+      params["lat"] = data.position.latitude.toString();
+      params["lon"] = data.position.longitude.toString();
     }
 
     if (data.name) params["name"] = data.name;
@@ -136,17 +135,53 @@ export default function SearchForm({ tags }: SearchFormProps) {
         </label>
         {geoFilter && (
           <>
-            <Slider
-              label="Max Distance (km)"
-              minValue={0}
-              maxValue={500}
-              watchValue={watch("distKm")}
-              {...register("distKm", { valueAsNumber: true })}
+            <Controller
+              name="position"
+              control={control}
+              render={({ field }) => (
+                <>
+                  <Slider
+                    label="Max Distance (km)"
+                    minValue={0}
+                    maxValue={500}
+                    watchValue={watch("position").distKm}
+                    onChange={(e) =>
+                      field.onChange({
+                        ...field.value,
+                        distKm: parseFloat(e.target.value),
+                      })
+                    }
+                    value={watch("position").distKm}
+                  />
+                  <PositionSelector
+                    position={watch("position")}
+                    setPosition={field.onChange}
+                  />
+                  <label htmlFor="latitude">Latitude</label>
+                  <input
+                    name="latitude"
+                    value={field.value.latitude}
+                    onChange={(e) =>
+                      field.onChange({
+                        ...field.value,
+                        latitude: parseFloat(e.target.value),
+                      })
+                    }
+                  />
+                  <label htmlFor="longitude">Longitude</label>
+                  <input
+                    name="longitude"
+                    value={field.value.longitude}
+                    onChange={(e) =>
+                      field.onChange({
+                        ...field.value,
+                        longitude: parseFloat(e.target.value),
+                      })
+                    }
+                  />
+                </>
+              )}
             />
-            <label htmlFor="lat">Latitude</label>
-            <input {...register("lat", { valueAsNumber: true })} />
-            <label htmlFor="lon">Longitude</label>
-            <input {...register("lon", { valueAsNumber: true })} />
           </>
         )}
         <hr />
