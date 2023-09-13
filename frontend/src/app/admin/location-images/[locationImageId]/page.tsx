@@ -5,7 +5,7 @@ import {
 import LocationImagePage from "./components/LocationImagePage";
 
 export async function generateStaticParams() {
-  const locationImages = await getLocationImages();
+  const { results: locationImages } = await getLocationImages();
 
   return locationImages.map((locationImage) => ({
     locationImageId: locationImage.id.toString(),
