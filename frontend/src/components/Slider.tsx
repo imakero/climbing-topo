@@ -28,6 +28,7 @@ const Slider = forwardRef<HTMLInputElement, SliderProps>(function Slider(
       <div className="flex w-full flex-col">
         <label htmlFor={props.name}>{label}</label>
         <input
+          id={props.name}
           ref={ref}
           type="range"
           min={minValue}

@@ -159,6 +159,7 @@ export default function SearchForm({ tags }: SearchFormProps) {
                   />
                   <label htmlFor="latitude">Latitude</label>
                   <input
+                    id="latitude"
                     name="latitude"
                     value={field.value.latitude}
                     onChange={(e) =>
@@ -170,6 +171,7 @@ export default function SearchForm({ tags }: SearchFormProps) {
                   />
                   <label htmlFor="longitude">Longitude</label>
                   <input
+                    id="longitude"
                     name="longitude"
                     value={field.value.longitude}
                     onChange={(e) =>
@@ -187,11 +189,11 @@ export default function SearchForm({ tags }: SearchFormProps) {
         <hr />
 
         <label htmlFor="name">Name should contain:</label>
-        <input {...register("name")} />
+        <input id="name" {...register("name")} />
         <label htmlFor="description">Description should contain:</label>
-        <input {...register("description")} />
+        <input id="description" {...register("description")} />
         <label htmlFor="location">Location should contain:</label>
-        <input {...register("location")} />
+        <input id="location" {...register("location")} />
         <label htmlFor="tags">Filter results on tags:</label>
         <Controller
           name="tags"
