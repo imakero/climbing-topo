@@ -37,17 +37,17 @@ def compare_problem(response_problem, problem):
     assert position["google_maps_string"] == f"{y}, {x}"
 
 
-def test_get_problem_list(db, client, problem, problem_other, ascent):
+def test_get_problems(db, client, problem, problem_other, ascent):
     assert Problem.objects.count() == 2
 
     response = client.get(reverse("problems"))
 
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert response.data["count"] == 2
 
     problems = Problem.objects.with_annotations("ascents", "rating")
     for response_problem, problem in zip(
-        response.data,
+        response.data["results"],
         problems,
     ):
         compare_problem(response_problem, problem)
@@ -106,9 +106,9 @@ def test_filter_problems_on_grade(
     )
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
-    response_ids = set([problem["id"] for problem in response.data])
+    response_ids = set([problem["id"] for problem in response.data["results"]])
     expected_ids = set([problems[i - 1].id for i in expected_problems])
 
     assert response_ids == expected_ids
@@ -147,10 +147,10 @@ def test_filter_problems_on_name(
     )
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problem_names)
+    assert response.data["count"] == len(expected_problem_names)
 
     response_problem_names = set(
-        [problem["name"] for problem in response.data]
+        [problem["name"] for problem in response.data["results"]]
     )
     assert response_problem_names == set(expected_problem_names)
 
@@ -180,9 +180,9 @@ def test_filter_problems_on_description(
     )
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
-    response_ids = set([problem["id"] for problem in response.data])
+    response_ids = set([problem["id"] for problem in response.data["results"]])
     expected_ids = set([problems[i - 1].id for i in expected_problems])
     assert response_ids == expected_ids
 
@@ -211,9 +211,9 @@ def test_filter_problems_on_location_name(
     )
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
-    response_ids = set([problem["id"] for problem in response.data])
+    response_ids = set([problem["id"] for problem in response.data["results"]])
     expected_ids = set([problems[i - 1].id for i in expected_problems])
     assert response_ids == expected_ids
 
@@ -253,10 +253,10 @@ def test_filter_problems_on_tags(
     response = client.get(reverse("problems"), data={"tags": f"{search_tags}"})
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
     response_problem_names = set(
-        [problem["name"] for problem in response.data]
+        [problem["name"] for problem in response.data["results"]]
     )
     assert response_problem_names == expected_problems
 
@@ -294,10 +294,10 @@ def test_filter_problems_on_distance(
     response = client.get(reverse("problems"), query_string)
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
     response_problem_names = set(
-        [problem["name"] for problem in response.data]
+        [problem["name"] for problem in response.data["results"]]
     )
     expected_problem_names = set([f"problem {i}" for i in expected_problems])
     assert response_problem_names == expected_problem_names
@@ -330,10 +330,10 @@ def test_filter_problems_on_rating(
     )
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
     response_problem_names = set(
-        [problem["name"] for problem in response.data]
+        [problem["name"] for problem in response.data["results"]]
     )
     expected_problem_names = set([f"problem {i}" for i in expected_problems])
 
@@ -367,10 +367,10 @@ def test_filter_problems_on_ascents(
     )
 
     assert response.status_code == 200
-    assert len(response.data) == len(expected_problems)
+    assert response.data["count"] == len(expected_problems)
 
     response_problem_names = set(
-        [problem["name"] for problem in response.data]
+        [problem["name"] for problem in response.data["results"]]
     )
     expected_problem_names = set([f"problem {i}" for i in expected_problems])
 

@@ -9,7 +9,7 @@ def test_can_get_problems_without_auth(db, client, problem, problem_other):
     response = client.get(reverse("problems"))
 
     assert response.status_code == 200
-    assert len(response.data) == 2
+    assert response.data["count"] == 2
 
 
 def test_regular_user_cannot_create_problems(
