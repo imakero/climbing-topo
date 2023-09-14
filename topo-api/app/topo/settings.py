@@ -200,6 +200,7 @@ REST_AUTH = {
     "JWT_AUTH_REFRESH_COOKIE": "jwt_refresh",
     "JWT_AUTH_HTTPONLY": False,
     "USER_DETAILS_SERIALIZER": "users.serializers.UserSerializer",
+    "JWT_TOKEN_CLAIMS_SERIALIZER": "users.serializers.CustomTokenObtainPairSerializer",
 }
 
 SIMPLE_JWT = {
